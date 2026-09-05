@@ -3,14 +3,8 @@
 // Si localStorage ya tiene datos, no los toca. Si esta vacio, siembra los datos ficticios.
 
 import { getItem, setItem } from './storage'
+import { KEYS } from './storageKeys'
 import { seedUsers, seedSubjects, seedActivities, seedDailyLogs } from './seedData'
-
-const KEYS = {
-  users: 'studeasy_users',
-  subjects: 'studeasy_subjects',
-  activities: 'studeasy_activities',
-  dailyLogs: 'studeasy_dailyLogs'
-}
 
 export function initStorage() {
   if (getItem(KEYS.users) === null) {

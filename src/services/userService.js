@@ -4,13 +4,12 @@
 
 import { getItem } from './storage'
 import { KEYS } from './init'
+import { Usuario } from '@/models/Usuario'
 
 export function getAllUsers() {
-  return getItem(KEYS.users) || []
+  return (getItem(KEYS.users) || []).map(user => Usuario.from(user))
 }
 
 export function getUserByCredentials(email, password) {
-  return getAllUsers().find(
-    user => user.email === email && user.passwordHash === password
-  ) || null
+  return Usuario.obtenerPorCredenciales(email, password)
 }

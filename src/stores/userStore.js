@@ -4,13 +4,13 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { getItem, setItem, removeItem } from '@/services/storage'
+import { getItem } from '@/services/storage'
+import { SESSION_KEY } from '@/services/storageKeys'
 import { getUserByCredentials } from '@/services/userService'
-
-const SESSION_KEY = 'studeasy_session'
+import { Usuario } from '@/models/Usuario'
 
 export const useUserStore = defineStore('user', () => {
-  const currentUser = ref(getItem(SESSION_KEY))
+  const currentUser = ref(Usuario.from(getItem(SESSION_KEY)))
 
   const isLoggedIn = computed(() => currentUser.value !== null)
   const isAdmin = computed(() => currentUser.value?.role === 'admin')
@@ -20,13 +20,13 @@ export const useUserStore = defineStore('user', () => {
     if (!user) return false
 
     currentUser.value = user
-    setItem(SESSION_KEY, user)
+    user.iniciarSesion()
     return true
   }
 
   function logout() {
+    currentUser.value?.cerrarSesion()
     currentUser.value = null
-    removeItem(SESSION_KEY)
   }
 
   return { currentUser, isLoggedIn, isAdmin, login, logout }
