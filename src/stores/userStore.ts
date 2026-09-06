@@ -1,4 +1,4 @@
-// src/stores/userStore.js
+// src/stores/userStore.ts
 // Estado global: quien esta logueado ahora mismo.
 // Las views nunca leen localStorage directo, siempre pasan por aqui.
 
@@ -8,14 +8,15 @@ import { getItem } from '@/services/storage'
 import { SESSION_KEY } from '@/services/storageKeys'
 import { getUserByCredentials } from '@/services/userService'
 import { Usuario } from '@/models/Usuario'
+import type { UsuarioData } from '@/models/types'
 
 export const useUserStore = defineStore('user', () => {
-  const currentUser = ref(Usuario.from(getItem(SESSION_KEY)))
+  const currentUser = ref(Usuario.from(getItem<UsuarioData>(SESSION_KEY)))
 
   const isLoggedIn = computed(() => currentUser.value !== null)
   const isAdmin = computed(() => currentUser.value?.role === 'admin')
 
-  function login(email, password) {
+  function login(email: string, password: string): boolean {
     const user = getUserByCredentials(email, password)
     if (!user) return false
 
@@ -24,7 +25,7 @@ export const useUserStore = defineStore('user', () => {
     return true
   }
 
-  function logout() {
+  function logout(): void {
     currentUser.value?.cerrarSesion()
     currentUser.value = null
   }

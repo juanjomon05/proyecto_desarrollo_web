@@ -1,16 +1,16 @@
-// src/services/storage.js
+// src/services/storage.ts
 // Capa base: unico archivo que habla directo con localStorage.
 // Ningun otro archivo del proyecto deberia llamar a localStorage directamente.
 
-export function getItem(key) {
+export function getItem<T>(key: string): T | null {
   const raw = localStorage.getItem(key)
-  return raw ? JSON.parse(raw) : null
+  return raw ? (JSON.parse(raw) as T) : null
 }
 
-export function setItem(key, value) {
+export function setItem<T>(key: string, value: T): void {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
-export function removeItem(key) {
+export function removeItem(key: string): void {
   localStorage.removeItem(key)
 }

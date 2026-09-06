@@ -1,7 +1,20 @@
-import { Actividad } from './Actividad.js'
-import { RegistroDiario } from './RegistroDiario.js'
+import { Actividad } from './Actividad'
+import { RegistroDiario } from './RegistroDiario'
+import type { ReporteRendimientoData } from './types'
 
-export class ReporteRendimiento {
+interface Promedios {
+  avgStudyHours: number | null
+  avgSleepHours: number | null
+}
+
+export class ReporteRendimiento implements ReporteRendimientoData {
+  activityId: string
+  activityTitle: string
+  dueDate: string
+  grade: number | null
+  avgStudyHours: number | null
+  avgSleepHours: number | null
+
   constructor({
     activityId,
     activityTitle,
@@ -9,7 +22,7 @@ export class ReporteRendimiento {
     grade,
     avgStudyHours,
     avgSleepHours
-  }) {
+  }: ReporteRendimientoData) {
     this.activityId = activityId
     this.activityTitle = activityTitle
     this.dueDate = dueDate
@@ -18,7 +31,7 @@ export class ReporteRendimiento {
     this.avgSleepHours = avgSleepHours
   }
 
-  static calcularPromedios(logs, endDate, days) {
+  static calcularPromedios(logs: RegistroDiario[], endDate: string, days: number): Promedios {
     const end = new Date(endDate)
     const start = new Date(end)
     start.setDate(start.getDate() - (days - 1))
@@ -37,7 +50,7 @@ export class ReporteRendimiento {
     return { avgStudyHours, avgSleepHours }
   }
 
-  static generarReporte(userId, daysWindow = 3) {
+  static generarReporte(userId: string, daysWindow = 3): ReporteRendimiento[] {
     const logs = RegistroDiario.obtenerPorUsuario(userId)
     const gradedActivities = Actividad.obtenerTodas().filter(activity => activity.grade !== null)
 

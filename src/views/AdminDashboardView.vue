@@ -1,19 +1,33 @@
-<script setup>
-import { ref, onMounted, computed } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, computed, watch } from 'vue'
 import Chart from 'chart.js/auto'
 import ApexCharts from 'apexcharts'
 import { getAllSubjects } from '@/services/subjectService'
 import { getAllActivities } from '@/services/activityService'
+import DataTable from '@/components/DataTable.vue'
+import StatusBadge from '@/components/StatusBadge.vue'
+import FilterSelect from '@/components/FilterSelect.vue'
+import ChartCard from '@/components/ChartCard.vue'
+import type { Materia } from '@/models/Materia'
+import type { Actividad } from '@/models/Actividad'
+import type { ActivityStatus } from '@/models/types'
 
-const subjects = ref([])
-const activities = ref([])
+const subjects = ref<Materia[]>([])
+const activities = ref<Actividad[]>([])
 const selectedSubjectId = ref('')
 
-const barCanvas = ref(null)
-let barChart = null
+const columns = [
+  { key: 'title', label: 'Título' },
+  { key: 'subjectId', label: 'Materia' },
+  { key: 'status', label: 'Estado' },
+  { key: 'grade', label: 'Nota' }
+]
 
-const donutEl = ref(null)
-let donutChart = null
+const barCanvas = ref<HTMLCanvasElement | null>(null)
+let barChart: Chart | null = null
+
+const donutEl = ref<HTMLDivElement | null>(null)
+let donutChart: ApexCharts | null = null
 
 onMounted(() => {
   subjects.value = getAllSubjects()
@@ -21,75 +35,95 @@ onMounted(() => {
   renderCharts()
 })
 
+watch(selectedSubjectId, renderCharts)
+
+const subjectOptions = computed(() => [
+  { value: '', label: 'Todas las materias' },
+  ...subjects.value.map(s => ({ value: s.id, label: s.name }))
+])
+
 const filteredActivities = computed(() => {
   if (!selectedSubjectId.value) return activities.value
   return activities.value.filter(a => a.subjectId === selectedSubjectId.value)
 })
 
-function subjectName(subjectId) {
+function subjectName(subjectId: string): string {
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 
-function statusCounts() {
-  const counts = { pendiente: 0, 'en progreso': 0, completada: 0 }
+function statusCounts(): Record<ActivityStatus, number> {
+  const counts: Record<ActivityStatus, number> = { pendiente: 0, 'en progreso': 0, completada: 0 }
   filteredActivities.value.forEach(a => { counts[a.status] = (counts[a.status] || 0) + 1 })
   return counts
 }
 
-function renderCharts() {
+function renderCharts(): void {
   const counts = statusCounts()
 
   if (barChart) barChart.destroy()
-  barChart = new Chart(barCanvas.value, {
-    type: 'bar',
-    data: {
-      labels: Object.keys(counts),
-      datasets: [{ label: 'Actividades por estado', data: Object.values(counts) }]
-    }
-  })
+  if (barCanvas.value) {
+    barChart = new Chart(barCanvas.value, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(counts),
+        datasets: [{ label: 'Actividades por estado', data: Object.values(counts) }]
+      }
+    })
+  }
 
   if (donutChart) donutChart.destroy()
-  donutChart = new ApexCharts(donutEl.value, {
-    chart: { type: 'donut', height: 280 },
-    series: Object.values(counts),
-    labels: Object.keys(counts),
-    legend: { position: 'bottom' }
-  })
-  donutChart.render()
+  if (donutEl.value) {
+    donutChart = new ApexCharts(donutEl.value, {
+      chart: { type: 'donut', height: 280 },
+      series: Object.values(counts),
+      labels: Object.keys(counts),
+      legend: { position: 'bottom' }
+    })
+    donutChart.render()
+  }
 }
 </script>
 
 <template>
-  <main>
-    <h1>Dashboard de administrador</h1>
-
-    <label for="subjectFilter">Filtrar por materia</label>
-    <select id="subjectFilter" v-model="selectedSubjectId" @change="renderCharts">
-      <option value="">Todas</option>
-      <option v-for="s in subjects" :key="s.id" :value="s.id">{{ s.name }}</option>
-    </select>
-
-    <table>
-      <thead><tr><th>Título</th><th>Materia</th><th>Estado</th><th>Nota</th></tr></thead>
-      <tbody>
-        <tr v-for="a in filteredActivities" :key="a.id">
-          <td>{{ a.title }}</td>
-          <td>{{ subjectName(a.subjectId) }}</td>
-          <td>{{ a.status }}</td>
-          <td>{{ a.grade ?? '—' }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div style="display: flex; gap: 32px; flex-wrap: wrap;">
-      <div style="flex: 1; min-width: 280px;">
-        <h2>Por estado (Chart.js)</h2>
-        <canvas ref="barCanvas" height="200"></canvas>
-      </div>
-      <div style="flex: 1; min-width: 280px;">
-        <h2>Distribución (ApexCharts)</h2>
-        <div ref="donutEl"></div>
-      </div>
+  <div class="page">
+    <div class="page-header">
+      <h1>Dashboard de administrador</h1>
+      <FilterSelect v-model="selectedSubjectId" :options="subjectOptions" label="Materia" />
     </div>
-  </main>
+
+    <div class="card">
+      <DataTable :columns="columns" :rows="filteredActivities" row-key="id" empty-text="No hay actividades para este filtro.">
+        <template #cell-subjectId="{ row }">
+          {{ subjectName(row.subjectId) }}
+        </template>
+        <template #cell-status="{ row }">
+          <StatusBadge :status="row.status" />
+        </template>
+        <template #cell-grade="{ row }">
+          {{ row.grade ?? '—' }}
+        </template>
+      </DataTable>
+    </div>
+
+    <div class="grid charts-grid">
+      <ChartCard title="Por estado (Chart.js)">
+        <canvas ref="barCanvas" height="220"></canvas>
+      </ChartCard>
+      <ChartCard title="Distribución (ApexCharts)">
+        <div ref="donutEl"></div>
+      </ChartCard>
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.charts-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 860px) {
+  .charts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+</style>
