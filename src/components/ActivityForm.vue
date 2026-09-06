@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { getAllSubjects } from '@/services/subjectService'
-import { getActivityById, createActivity, updateActivity } from '@/services/activityService'
-import type { Materia } from '@/models/Materia'
-import type { Actividad } from '@/models/Actividad'
+import { getActivityById, getActivitySubjectId, createActivity, updateActivity } from '@/services/activityService'
+import type { Subject } from '@/models/Subject'
+import type { Activity } from '@/models/Activity'
 import type { ActivityStatus, ActivityType } from '@/models/types'
 
 const props = defineProps<{
@@ -12,12 +12,12 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  saved: [activity: Actividad]
+  saved: [activity: Activity]
 }>()
 
 const isEditMode = computed(() => !!props.activityId)
 
-const subjects = ref<Materia[]>([])
+const subjects = ref<Subject[]>([])
 const subjectId = ref('')
 const title = ref('')
 const type = ref<ActivityType>('tarea')
@@ -36,7 +36,7 @@ onMounted(() => {
   if (props.activityId) {
     const activity = getActivityById(props.activityId)
     if (activity) {
-      subjectId.value = activity.subjectId
+      subjectId.value = getActivitySubjectId(activity.id)
       title.value = activity.title
       type.value = activity.type
       dueDate.value = activity.dueDate

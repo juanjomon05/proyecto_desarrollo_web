@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { getAllActivities, updateActivity } from '@/services/activityService'
+import { getAllActivities, getActivitySubjectId, updateActivity } from '@/services/activityService'
 import { getAllSubjects } from '@/services/subjectService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
 import Modal from '@/components/Modal.vue'
 import ActivityForm from '@/components/ActivityForm.vue'
-import type { Actividad } from '@/models/Actividad'
-import type { Materia } from '@/models/Materia'
+import type { Activity } from '@/models/Activity'
+import type { Subject } from '@/models/Subject'
 import type { ActivityStatus } from '@/models/types'
 
-const activities = ref<Actividad[]>([])
-const subjects = ref<Materia[]>([])
+const activities = ref<Activity[]>([])
+const subjects = ref<Subject[]>([])
 const selectedSubjectId = ref('')
 const selectedStatus = ref<ActivityStatus | ''>('')
 const isModalOpen = ref(false)
 
 const columns = [
   { key: 'title', label: 'Título' },
-  { key: 'subjectId', label: 'Materia' },
+  { key: 'subjectName', label: 'Materia' },
   { key: 'type', label: 'Tipo' },
   { key: 'dueDate', label: 'Vence' },
   { key: 'status', label: 'Estado' },
@@ -47,13 +47,14 @@ const subjectOptions = computed(() => [
 
 const filteredActivities = computed(() => {
   return activities.value.filter(a => {
-    const matchesSubject = !selectedSubjectId.value || a.subjectId === selectedSubjectId.value
+    const matchesSubject = !selectedSubjectId.value || getActivitySubjectId(a.id) === selectedSubjectId.value
     const matchesStatus = !selectedStatus.value || a.status === selectedStatus.value
     return matchesSubject && matchesStatus
   })
 })
 
-function subjectName(subjectId: string): string {
+function subjectNameByActivity(activityId: string): string {
+  const subjectId = getActivitySubjectId(activityId)
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 
@@ -97,8 +98,8 @@ function handleSaved(): void {
 
     <div class="card">
       <DataTable :columns="columns" :rows="filteredActivities" row-key="id" empty-text="No hay actividades para este filtro.">
-        <template #cell-subjectId="{ row }">
-          {{ subjectName(row.subjectId) }}
+        <template #cell-subjectName="{ row }">
+          {{ subjectNameByActivity(row.id) }}
         </template>
         <template #cell-status="{ row }">
           <StatusBadge :status="row.status" />

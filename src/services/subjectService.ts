@@ -1,26 +1,30 @@
 // src/services/subjectService.ts
-// CRUD de Materia. Ninguna view debe llamar a storage.ts directamente,
+// CRUD de Subject. Ninguna view debe llamar a storage.ts directamente,
 // siempre pasa por aqui.
 
-import { Materia } from '@/models/Materia'
-import type { MateriaData } from '@/models/types'
+import { Subject } from '@/models/Subject'
+import type { SubjectData, SubjectRecord } from '@/models/types'
 
-export function getAllSubjects(): Materia[] {
-  return Materia.obtenerTodas()
+export function getAllSubjects(): Subject[] {
+  return Subject.getAll()
 }
 
-export function getSubjectById(id: string): Materia | null {
-  return Materia.obtenerPorId(id)
+export function getSubjectsByUser(userId: string): Subject[] {
+  return Subject.getByUser(userId)
 }
 
-export function createSubject({ name, professor, credits }: Pick<MateriaData, 'name' | 'professor' | 'credits'>): Materia {
-  return Materia.crear({ name, professor, credits })
+export function getSubjectById(id: string): Subject | null {
+  return Subject.getById(id)
 }
 
-export function updateSubject(id: string, changes: Partial<MateriaData>): Materia | null {
-  return Materia.actualizar(id, changes)
+export function createSubject({ name, professor, credits, userId }: Pick<SubjectRecord, 'name' | 'professor' | 'credits'> & { userId?: string }): Subject {
+  return Subject.create({ name, professor, credits, userId })
+}
+
+export function updateSubject(id: string, changes: Partial<SubjectData>): Subject | null {
+  return Subject.update(id, changes)
 }
 
 export function deleteSubject(id: string): void {
-  Materia.eliminar(id)
+  Subject.delete(id)
 }

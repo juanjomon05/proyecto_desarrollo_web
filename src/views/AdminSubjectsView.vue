@@ -2,9 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { getAllSubjects, createSubject, updateSubject, deleteSubject } from '@/services/subjectService'
 import DataTable from '@/components/DataTable.vue'
-import type { Materia } from '@/models/Materia'
+import type { Subject } from '@/models/Subject'
 
-const subjects = ref<Materia[]>([])
+const subjects = ref<Subject[]>([])
 const editingId = ref<string | null>(null)
 const errorMessage = ref('')
 
@@ -22,7 +22,7 @@ function loadSubjects(): void {
   subjects.value = getAllSubjects()
 }
 
-function startEdit(subject: Materia): void {
+function startEdit(subject: Subject): void {
   editingId.value = subject.id
   form.value = { name: subject.name, professor: subject.professor, credits: String(subject.credits) }
 }
