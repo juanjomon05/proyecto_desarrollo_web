@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getAllSubjects } from '@/services/subjectService'
-import type { Materia } from '@/models/Materia'
+import { useUserStore } from '@/stores/userStore'
+import { getSubjectsByUser } from '@/services/subjectService'
+import type { Subject } from '@/models/Subject'
 
-const subjects = ref<Materia[]>([])
+const userStore = useUserStore()
+const subjects = ref<Subject[]>([])
 
 onMounted(() => {
-  subjects.value = getAllSubjects()
+  if (userStore.currentUser) {
+    subjects.value = getSubjectsByUser(userStore.currentUser.id)
+  }
 })
 </script>
 

@@ -1,24 +1,24 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useUserStore } from '@/stores/userStore'
-import { getAllSubjects } from '@/services/subjectService'
+import { getSubjectsByUser } from '@/services/subjectService'
 import { getAllActivities } from '@/services/activityService'
 import { getDailyLogsByUser } from '@/services/dailyLogService'
 import StatCard from '@/components/StatCard.vue'
-import type { Materia } from '@/models/Materia'
-import type { Actividad } from '@/models/Actividad'
-import type { RegistroDiario } from '@/models/RegistroDiario'
+import type { Subject } from '@/models/Subject'
+import type { Activity } from '@/models/Activity'
+import type { DailyLog } from '@/models/DailyLog'
 
 const userStore = useUserStore()
 
-const subjects = ref<Materia[]>([])
-const activities = ref<Actividad[]>([])
-const logs = ref<RegistroDiario[]>([])
+const subjects = ref<Subject[]>([])
+const activities = ref<Activity[]>([])
+const logs = ref<DailyLog[]>([])
 
 onMounted(() => {
-  subjects.value = getAllSubjects()
   activities.value = getAllActivities()
   if (userStore.currentUser) {
+    subjects.value = getSubjectsByUser(userStore.currentUser.id)
     logs.value = getDailyLogsByUser(userStore.currentUser.id)
   }
 })

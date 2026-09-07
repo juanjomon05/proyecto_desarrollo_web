@@ -5,24 +5,7 @@ export type ActivityType = 'tarea' | 'quiz' | 'examen' | 'proyecto'
 export type ActivityStatus = 'pendiente' | 'en progreso' | 'completada'
 export type UserRole = 'student' | 'admin'
 
-export interface MateriaData {
-  id?: string
-  name: string
-  professor: string
-  credits: number
-}
-
-export interface ActividadData {
-  id?: string
-  subjectId: string
-  title: string
-  type: ActivityType
-  dueDate: string
-  status?: ActivityStatus
-  grade?: number | string | null
-}
-
-export interface UsuarioData {
+export interface UserData {
   id: string
   name: string
   email: string
@@ -30,15 +13,42 @@ export interface UsuarioData {
   role: UserRole
 }
 
-export interface RegistroDiarioData {
+export interface SubjectData {
   id?: string
-  userId: string
+  name: string
+  professor: string
+  credits: number | string
+}
+
+export interface ActivityData {
+  id?: string
+  title: string
+  type: ActivityType
+  dueDate: string
+  status?: ActivityStatus
+  grade?: number | string | null
+}
+
+export interface DailyLogData {
+  id?: string
   date: string
   studyHours: number | string
   sleepHours: number | string
 }
 
-export interface ReporteRendimientoData {
+export interface SubjectRecord extends SubjectData {
+  userId?: string
+}
+
+export interface ActivityRecord extends ActivityData {
+  subjectId: string
+}
+
+export interface DailyLogRecord extends DailyLogData {
+  userId: string
+}
+
+export interface PerformanceData {
   activityId: string
   activityTitle: string
   dueDate: string

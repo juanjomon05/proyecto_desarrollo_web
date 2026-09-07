@@ -1,10 +1,14 @@
-<script setup lang="ts" generic="T extends Record<string, unknown>">
+<script setup lang="ts" generic="T extends object">
 defineProps<{
   columns: { key: string; label: string }[]
   rows: T[]
   rowKey: keyof T
   emptyText?: string
 }>()
+
+function cellValue(row: object, key: string): unknown {
+  return (row as Record<string, unknown>)[key]
+}
 </script>
 
 <template>
@@ -17,9 +21,9 @@ defineProps<{
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in rows" :key="String(row[rowKey])">
+        <tr v-for="row in rows" :key="String(cellValue(row, String(rowKey)))">
           <td v-for="col in columns" :key="col.key">
-            <slot :name="`cell-${col.key}`" :row="row">{{ row[col.key] }}</slot>
+            <slot :name="`cell-${col.key}`" :row="row">{{ cellValue(row, col.key) }}</slot>
           </td>
           <td v-if="$slots.actions" class="data-table__actions">
             <slot name="actions" :row="row" />

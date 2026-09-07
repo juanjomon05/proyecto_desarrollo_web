@@ -3,22 +3,22 @@ import { ref, onMounted, computed, watch } from 'vue'
 import Chart from 'chart.js/auto'
 import ApexCharts from 'apexcharts'
 import { getAllSubjects } from '@/services/subjectService'
-import { getAllActivities } from '@/services/activityService'
+import { getAllActivities, getActivitySubjectId } from '@/services/activityService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
 import ChartCard from '@/components/ChartCard.vue'
-import type { Materia } from '@/models/Materia'
-import type { Actividad } from '@/models/Actividad'
+import type { Subject } from '@/models/Subject'
+import type { Activity } from '@/models/Activity'
 import type { ActivityStatus } from '@/models/types'
 
-const subjects = ref<Materia[]>([])
-const activities = ref<Actividad[]>([])
+const subjects = ref<Subject[]>([])
+const activities = ref<Activity[]>([])
 const selectedSubjectId = ref('')
 
 const columns = [
   { key: 'title', label: 'Título' },
-  { key: 'subjectId', label: 'Materia' },
+  { key: 'subjectName', label: 'Materia' },
   { key: 'status', label: 'Estado' },
   { key: 'grade', label: 'Nota' }
 ]
@@ -44,10 +44,11 @@ const subjectOptions = computed(() => [
 
 const filteredActivities = computed(() => {
   if (!selectedSubjectId.value) return activities.value
-  return activities.value.filter(a => a.subjectId === selectedSubjectId.value)
+  return activities.value.filter(a => getActivitySubjectId(a.id) === selectedSubjectId.value)
 })
 
-function subjectName(subjectId: string): string {
+function subjectNameByActivity(activityId: string): string {
+  const subjectId = getActivitySubjectId(activityId)
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 
@@ -93,8 +94,8 @@ function renderCharts(): void {
 
     <div class="card">
       <DataTable :columns="columns" :rows="filteredActivities" row-key="id" empty-text="No hay actividades para este filtro.">
-        <template #cell-subjectId="{ row }">
-          {{ subjectName(row.subjectId) }}
+        <template #cell-subjectName="{ row }">
+          {{ subjectNameByActivity(row.id) }}
         </template>
         <template #cell-status="{ row }">
           <StatusBadge :status="row.status" />

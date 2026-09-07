@@ -5,12 +5,12 @@ import { getSubjectById } from '@/services/subjectService'
 import { getActivitiesBySubject } from '@/services/activityService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
-import type { Materia } from '@/models/Materia'
-import type { Actividad } from '@/models/Actividad'
+import type { Subject } from '@/models/Subject'
+import type { Activity } from '@/models/Activity'
 
 const route = useRoute()
-const subject = ref<Materia | null>(null)
-const activities = ref<Actividad[]>([])
+const subject = ref<Subject | null>(null)
+const activities = ref<Activity[]>([])
 
 const columns = [
   { key: 'title', label: 'Título' },

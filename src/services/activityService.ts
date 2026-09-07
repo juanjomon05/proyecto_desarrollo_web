@@ -1,30 +1,34 @@
 // src/services/activityService.ts
-// CRUD de Actividad. Ninguna view debe llamar a storage.ts directamente,
+// CRUD de Activity. Ninguna view debe llamar a storage.ts directamente,
 // siempre pasa por aqui.
 
-import { Actividad } from '@/models/Actividad'
-import type { ActividadData } from '@/models/types'
+import { Activity } from '@/models/Activity'
+import type { ActivityRecord } from '@/models/types'
 
-export function getAllActivities(): Actividad[] {
-  return Actividad.obtenerTodas()
+export function getAllActivities(): Activity[] {
+  return Activity.getAll()
 }
 
-export function getActivitiesBySubject(subjectId: string): Actividad[] {
-  return Actividad.obtenerPorMateria(subjectId)
+export function getActivitiesBySubject(subjectId: string): Activity[] {
+  return Activity.getBySubject(subjectId)
 }
 
-export function getActivityById(id: string): Actividad | null {
-  return Actividad.obtenerPorId(id)
+export function getActivityById(id: string): Activity | null {
+  return Activity.getById(id)
 }
 
-export function createActivity({ subjectId, title, type, dueDate }: Pick<ActividadData, 'subjectId' | 'title' | 'type' | 'dueDate'>): Actividad {
-  return Actividad.crear({ subjectId, title, type, dueDate })
+export function getActivitySubjectId(id: string): string {
+  return Activity.getSubjectId(id)
 }
 
-export function updateActivity(id: string, changes: Partial<ActividadData>): Actividad | null {
-  return Actividad.actualizar(id, changes)
+export function createActivity({ subjectId, title, type, dueDate }: Pick<ActivityRecord, 'subjectId' | 'title' | 'type' | 'dueDate'>): Activity {
+  return Activity.create({ subjectId, title, type, dueDate })
+}
+
+export function updateActivity(id: string, changes: Partial<ActivityRecord>): Activity | null {
+  return Activity.update(id, changes)
 }
 
 export function deleteActivity(id: string): void {
-  Actividad.eliminar(id)
+  Activity.delete(id)
 }
