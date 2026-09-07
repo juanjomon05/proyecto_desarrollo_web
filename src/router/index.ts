@@ -10,6 +10,7 @@ import ActivitiesView from '@/views/ActivitiesView.vue'
 import ActivityFormView from '@/views/ActivityFormView.vue'
 import TrackingView from '@/views/TrackingView.vue'
 import AdminSubjectsView from '@/views/AdminSubjectsView.vue'
+import AdminSubjectFormView from '@/views/AdminSubjectFormView.vue'
 import AdminDashboardView from '@/views/AdminDashboardView.vue'
 
 declare module 'vue-router' {
@@ -33,6 +34,8 @@ const routes: RouteRecordRaw[] = [
   { path: '/tracking', name: 'tracking', component: TrackingView, meta: { requiresAuth: true } },
 
   { path: '/admin/subjects', name: 'admin-subjects', component: AdminSubjectsView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/subjects/new', name: 'admin-subject-new', component: AdminSubjectFormView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/subjects/:id/edit', name: 'admin-subject-edit', component: AdminSubjectFormView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/dashboard', name: 'admin-dashboard', component: AdminDashboardView, meta: { requiresAuth: true, requiresAdmin: true } }
 ]
 
