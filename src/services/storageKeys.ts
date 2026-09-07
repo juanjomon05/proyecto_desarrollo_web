@@ -6,3 +6,4 @@ export const KEYS = {
 } as const
 
 export const SESSION_KEY = 'studeasy_session'
+export const REMEMBERED_EMAIL_KEY = 'studeasy_rememberedEmail'

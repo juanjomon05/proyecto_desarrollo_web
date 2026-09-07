@@ -2,6 +2,14 @@ import { getItem, setItem } from '../services/storage'
 import { KEYS, SESSION_KEY } from '../services/storageKeys'
 import type { UserData, UserRole } from './types'
 
+function getRecords(): UserData[] {
+  return getItem<UserData[]>(KEYS.users) || []
+}
+
+function saveRecords(users: UserData[]): void {
+  setItem(KEYS.users, users)
+}
+
 export class User implements UserData {
   id: string
   name: string
@@ -9,7 +17,7 @@ export class User implements UserData {
   passwordHash: string
   role: UserRole
 
-  constructor({ id, name, email, passwordHash, role }: UserData) {
+  constructor({ id = crypto.randomUUID(), name, email, passwordHash, role }: UserData) {
     this.id = id
     this.name = name
     this.email = email
@@ -57,5 +65,32 @@ export class User implements UserData {
     return User.from(
       User.getAll().find(user => user.email === email && user.passwordHash === password)
     )
+  }
+
+  static getByEmail(email: string): User | null {
+    return User.from(getRecords().find(user => user.email === email))
+  }
+
+  static create({ name, email, password }: { name: string; email: string; password: string }): User {
+    const users = getRecords()
+    const newUser = new User({ id: crypto.randomUUID(), name, email, passwordHash: password, role: 'student' })
+    users.push(newUser.getters())
+    saveRecords(users)
+    return newUser
+  }
+
+  static update(id: string, changes: Partial<UserData>): User | null {
+    const users = getRecords()
+    const index = users.findIndex(user => user.id === id)
+    if (index === -1) return null
+
+    const updatedUser = new User({ ...users[index], ...changes })
+    users[index] = updatedUser.getters()
+    saveRecords(users)
+    return updatedUser
+  }
+
+  static delete(id: string): void {
+    saveRecords(getRecords().filter(user => user.id !== id))
   }
 }

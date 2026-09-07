@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import AppLogo from '@/components/AppLogo.vue'
 
 const userStore = useUserStore()
+const router = useRouter()
 const isMobileMenuOpen = ref(false)
 
 function handleLogout(): void {
   userStore.logout()
   isMobileMenuOpen.value = false
+  router.push({ name: 'login' })
 }
 
 function closeMobileMenu(): void {
@@ -54,6 +56,7 @@ function initials(name: string): string {
           </p>
           <router-link to="/admin/subjects" class="sidebar__link" @click="closeMobileMenu">Materias</router-link>
           <router-link to="/admin/dashboard" class="sidebar__link" @click="closeMobileMenu">Dashboard</router-link>
+          <router-link to="/admin/users" class="sidebar__link" @click="closeMobileMenu">Usuarios</router-link>
         </template>
       </nav>
 

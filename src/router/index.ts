@@ -4,6 +4,8 @@ import { useUserStore } from '@/stores/userStore'
 
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
+import RegisterView from '@/views/RegisterView.vue'
+import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
 import SubjectsView from '@/views/SubjectsView.vue'
 import SubjectDetailView from '@/views/SubjectDetailView.vue'
 import ActivitiesView from '@/views/ActivitiesView.vue'
@@ -12,6 +14,7 @@ import TrackingView from '@/views/TrackingView.vue'
 import AdminSubjectsView from '@/views/AdminSubjectsView.vue'
 import AdminSubjectFormView from '@/views/AdminSubjectFormView.vue'
 import AdminDashboardView from '@/views/AdminDashboardView.vue'
+import AdminUsersView from '@/views/AdminUsersView.vue'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -23,6 +26,8 @@ declare module 'vue-router' {
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: HomeView },
   { path: '/login', name: 'login', component: LoginView },
+  { path: '/register', name: 'register', component: RegisterView },
+  { path: '/forgot-password', name: 'forgot-password', component: ForgotPasswordView },
 
   { path: '/subjects', name: 'subjects', component: SubjectsView, meta: { requiresAuth: true } },
   { path: '/subjects/:id', name: 'subject-detail', component: SubjectDetailView, meta: { requiresAuth: true } },
@@ -36,7 +41,8 @@ const routes: RouteRecordRaw[] = [
   { path: '/admin/subjects', name: 'admin-subjects', component: AdminSubjectsView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/subjects/new', name: 'admin-subject-new', component: AdminSubjectFormView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/subjects/:id/edit', name: 'admin-subject-edit', component: AdminSubjectFormView, meta: { requiresAuth: true, requiresAdmin: true } },
-  { path: '/admin/dashboard', name: 'admin-dashboard', component: AdminDashboardView, meta: { requiresAuth: true, requiresAdmin: true } }
+  { path: '/admin/dashboard', name: 'admin-dashboard', component: AdminDashboardView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/users', name: 'admin-users', component: AdminUsersView, meta: { requiresAuth: true, requiresAdmin: true } }
 ]
 
 const router = createRouter({
@@ -46,6 +52,14 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const userStore = useUserStore()
+
+  if (to.name === 'home' && !userStore.isLoggedIn) {
+    return { name: 'login' }
+  }
+
+  if ((to.name === 'login' || to.name === 'register') && userStore.isLoggedIn) {
+    return { name: 'home' }
+  }
 
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
     return { name: 'login' }

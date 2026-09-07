@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { getItem, removeItem } from '@/services/storage'
 import { SESSION_KEY } from '@/services/storageKeys'
-import { getUserByCredentials } from '@/services/userService'
+import { getUserByCredentials, registerUser } from '@/services/userService'
 import { User } from '@/models/User'
 import type { UserData } from '@/models/types'
 
@@ -25,10 +25,21 @@ export const useUserStore = defineStore('user', () => {
     return true
   }
 
+  function register(name: string, email: string, password: string): { success: boolean; message?: string } {
+    try {
+      const user = registerUser({ name, email, password })
+      currentUser.value = user
+      user.login()
+      return { success: true }
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : 'No se pudo crear la cuenta.' }
+    }
+  }
+
   function logout(): void {
     removeItem(SESSION_KEY)
     currentUser.value = null
   }
 
-  return { currentUser, isLoggedIn, isAdmin, login, logout }
+  return { currentUser, isLoggedIn, isAdmin, login, register, logout }
 })
