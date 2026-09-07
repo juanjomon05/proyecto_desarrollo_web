@@ -2,22 +2,33 @@
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/userStore'
 import { getSubjectsByUser } from '@/services/subjectService'
+import Modal from '@/components/Modal.vue'
+import SubjectForm from '@/components/SubjectForm.vue'
 import type { Subject } from '@/models/Subject'
 
 const userStore = useUserStore()
 const subjects = ref<Subject[]>([])
+const isModalOpen = ref(false)
 
-onMounted(() => {
+function loadSubjects(): void {
   if (userStore.currentUser) {
     subjects.value = getSubjectsByUser(userStore.currentUser.id)
   }
-})
+}
+
+onMounted(loadSubjects)
+
+function handleSaved(): void {
+  isModalOpen.value = false
+  loadSubjects()
+}
 </script>
 
 <template>
   <div class="page">
     <div class="page-header">
       <h1>Mis materias</h1>
+      <button type="button" class="btn btn-primary" @click="isModalOpen = true">+ Agregar materia</button>
     </div>
 
     <div v-if="subjects.length" class="grid grid-cards">
@@ -34,6 +45,10 @@ onMounted(() => {
     </div>
 
     <div v-else class="card empty-state">No tienes materias registradas todavía.</div>
+
+    <Modal v-if="isModalOpen" title="Nueva materia" @close="isModalOpen = false">
+      <SubjectForm @saved="handleSaved" />
+    </Modal>
   </div>
 </template>
 

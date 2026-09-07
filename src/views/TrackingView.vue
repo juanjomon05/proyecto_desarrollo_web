@@ -65,12 +65,12 @@ function renderChart(): void {
       labels: data.map(d => d.activityTitle),
       datasets: [
         { label: 'Nota', data: data.map(d => d.grade ?? 0), yAxisID: 'y' },
-        { label: `Horas de estudio (prom. ${daysWindow.value} días previos)`, data: data.map(d => d.avgStudyHours ?? 0), yAxisID: 'y1' }
+        { label: `Horas de estudio (prom. últimos ${daysWindow.value} días, hoy incluido)`, data: data.map(d => d.avgStudyHours ?? 0), yAxisID: 'y1' }
       ]
     },
     options: {
       scales: {
-        y: { type: 'linear', position: 'left', min: 0, max: 100, title: { display: true, text: 'Nota' } },
+        y: { type: 'linear', position: 'left', min: 0, max: 5, title: { display: true, text: 'Nota' } },
         y1: { type: 'linear', position: 'right', min: 0, grid: { drawOnChartArea: false }, title: { display: true, text: 'Horas de estudio' } }
       }
     }
@@ -125,9 +125,9 @@ function renderChart(): void {
       <ChartCard title="Notas vs. hábitos de estudio previos">
         <template #actions>
           <select v-model.number="daysWindow" class="input" @change="renderChart">
-            <option :value="1">1 día previo</option>
-            <option :value="3">3 días previos</option>
-            <option :value="7">7 días previos</option>
+            <option :value="1">Hoy</option>
+            <option :value="3">Últimos 3 días</option>
+            <option :value="7">Últimos 7 días</option>
           </select>
         </template>
         <canvas ref="chartCanvas" height="140"></canvas>

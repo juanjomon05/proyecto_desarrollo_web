@@ -3,7 +3,7 @@
 // siempre pasa por aqui.
 
 import { Subject } from '@/models/Subject'
-import type { SubjectData, SubjectRecord } from '@/models/types'
+import type { CreateSubjectDTO, UpdateSubjectDTO } from './dtos'
 
 export function getAllSubjects(): Subject[] {
   return Subject.getAll()
@@ -17,11 +17,11 @@ export function getSubjectById(id: string): Subject | null {
   return Subject.getById(id)
 }
 
-export function createSubject({ name, professor, credits, userId }: Pick<SubjectRecord, 'name' | 'professor' | 'credits'> & { userId?: string }): Subject {
+export function createSubject({ name, professor, credits, userId }: CreateSubjectDTO): Subject {
   return Subject.create({ name, professor, credits, userId })
 }
 
-export function updateSubject(id: string, changes: Partial<SubjectData>): Subject | null {
+export function updateSubject(id: string, changes: UpdateSubjectDTO): Subject | null {
   return Subject.update(id, changes)
 }
 

@@ -8,7 +8,10 @@ function normalizeActivity(activity: ActivityRecord): ActivityRecord {
     status: activity.status || 'pendiente',
     grade: activity.grade === '' || activity.grade === null || activity.grade === undefined
       ? null
-      : Number(activity.grade)
+      : Number(activity.grade),
+    weight: activity.weight === '' || activity.weight === null || activity.weight === undefined
+      ? null
+      : Number(activity.weight)
   }
 }
 
@@ -27,6 +30,7 @@ export class Activity implements ActivityData {
   dueDate: string
   status: ActivityStatus
   grade: number | null
+  weight: number | null
 
   constructor({
     id = crypto.randomUUID(),
@@ -34,7 +38,8 @@ export class Activity implements ActivityData {
     type,
     dueDate,
     status = 'pendiente',
-    grade = null
+    grade = null,
+    weight = null
   }: ActivityData) {
     this.id = id
     this.title = title
@@ -42,6 +47,7 @@ export class Activity implements ActivityData {
     this.dueDate = dueDate
     this.status = status
     this.grade = grade === '' || grade === null || grade === undefined ? null : Number(grade)
+    this.weight = weight === '' || weight === null || weight === undefined ? null : Number(weight)
   }
 
   CRUD(): string[] {
@@ -55,7 +61,8 @@ export class Activity implements ActivityData {
       type: this.type,
       dueDate: this.dueDate,
       status: this.status,
-      grade: this.grade
+      grade: this.grade,
+      weight: this.weight
     }
   }
 
@@ -67,6 +74,9 @@ export class Activity implements ActivityData {
     if (changes.status !== undefined) this.status = changes.status
     if (changes.grade !== undefined) {
       this.grade = changes.grade === '' || changes.grade === null ? null : Number(changes.grade)
+    }
+    if (changes.weight !== undefined) {
+      this.weight = changes.weight === '' || changes.weight === null ? null : Number(changes.weight)
     }
     return this
   }
@@ -93,9 +103,9 @@ export class Activity implements ActivityData {
     return getRecords().find(activity => activity.id === id)?.subjectId || ''
   }
 
-  static create({ subjectId, title, type, dueDate }: Pick<ActivityRecord, 'subjectId' | 'title' | 'type' | 'dueDate'>): Activity {
+  static create({ subjectId, title, type, dueDate, weight }: Pick<ActivityRecord, 'subjectId' | 'title' | 'type' | 'dueDate'> & { weight?: ActivityRecord['weight'] }): Activity {
     const activities = getRecords()
-    const newActivity = new Activity({ title, type, dueDate })
+    const newActivity = new Activity({ title, type, dueDate, weight })
     activities.push({ ...newActivity.getters(), subjectId })
     saveRecords(activities)
     return newActivity

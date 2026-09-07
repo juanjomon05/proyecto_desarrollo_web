@@ -3,10 +3,18 @@
 // siempre pasa por aqui.
 
 import { Activity } from '@/models/Activity'
-import type { ActivityRecord } from '@/models/types'
+import { getSubjectsByUser } from './subjectService'
+import type { CreateActivityDTO, UpdateActivityDTO } from './dtos'
 
 export function getAllActivities(): Activity[] {
   return Activity.getAll()
+}
+
+// Actividades de las materias del usuario (ver Subject.getByUser). A diferencia
+// de getAllActivities(), no mezcla actividades de materias de otros usuarios.
+export function getActivitiesForUser(userId: string): Activity[] {
+  const visibleSubjectIds = new Set(getSubjectsByUser(userId).map(subject => subject.id))
+  return Activity.getAll().filter(activity => visibleSubjectIds.has(Activity.getSubjectId(activity.id)))
 }
 
 export function getActivitiesBySubject(subjectId: string): Activity[] {
@@ -21,11 +29,11 @@ export function getActivitySubjectId(id: string): string {
   return Activity.getSubjectId(id)
 }
 
-export function createActivity({ subjectId, title, type, dueDate }: Pick<ActivityRecord, 'subjectId' | 'title' | 'type' | 'dueDate'>): Activity {
-  return Activity.create({ subjectId, title, type, dueDate })
+export function createActivity({ subjectId, title, type, dueDate, weight }: CreateActivityDTO): Activity {
+  return Activity.create({ subjectId, title, type, dueDate, weight })
 }
 
-export function updateActivity(id: string, changes: Partial<ActivityRecord>): Activity | null {
+export function updateActivity(id: string, changes: UpdateActivityDTO): Activity | null {
   return Activity.update(id, changes)
 }
 

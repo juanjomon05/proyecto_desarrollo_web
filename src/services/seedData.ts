@@ -14,11 +14,13 @@ export const seedSubjects: SubjectRecord[] = [
   { id: 's3', userId: 'u1', name: 'Cálculo III', professor: 'Ing. Vargas', credits: 4 }
 ]
 
+// Nota sobre 5.0 (minimo para ganar la materia: 3.0). weight = % que vale la
+// actividad dentro de la nota final de su materia.
 export const seedActivities: ActivityRecord[] = [
-  { id: 'a1', subjectId: 's1', title: 'Entregable 1 - Arquitectura', type: 'proyecto', dueDate: '2026-09-15', status: 'pendiente', grade: null },
-  { id: 'a2', subjectId: 's1', title: 'Quiz de patrones de diseño', type: 'quiz', dueDate: '2026-09-10', status: 'completada', grade: 85 },
-  { id: 'a3', subjectId: 's2', title: 'Examen parcial 1', type: 'examen', dueDate: '2026-09-20', status: 'pendiente', grade: null },
-  { id: 'a4', subjectId: 's3', title: 'Tarea de integrales', type: 'tarea', dueDate: '2026-09-08', status: 'completada', grade: 92 }
+  { id: 'a1', subjectId: 's1', title: 'Entregable 1 - Arquitectura', type: 'proyecto', dueDate: '2026-09-15', status: 'pendiente', grade: null, weight: 60 },
+  { id: 'a2', subjectId: 's1', title: 'Quiz de patrones de diseño', type: 'quiz', dueDate: '2026-09-10', status: 'completada', grade: 4.3, weight: 40 },
+  { id: 'a3', subjectId: 's2', title: 'Examen parcial 1', type: 'examen', dueDate: '2026-09-20', status: 'pendiente', grade: null, weight: 100 },
+  { id: 'a4', subjectId: 's3', title: 'Tarea de integrales', type: 'tarea', dueDate: '2026-09-08', status: 'completada', grade: 4.6, weight: 100 }
 ]
 
 export const seedDailyLogs: DailyLogRecord[] = [

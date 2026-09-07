@@ -7,19 +7,25 @@ import AppLogo from '@/components/AppLogo.vue'
 const router = useRouter()
 const userStore = useUserStore()
 
+const name = ref('')
 const email = ref('')
 const password = ref('')
+const confirmPassword = ref('')
 const errorMessage = ref('')
 
 function handleSubmit(): void {
-  if (!email.value || !password.value) {
-    errorMessage.value = 'Completa correo y contraseña.'
+  if (!name.value || !email.value || !password.value) {
+    errorMessage.value = 'Completa nombre, correo y contraseña.'
+    return
+  }
+  if (password.value !== confirmPassword.value) {
+    errorMessage.value = 'Las contraseñas no coinciden.'
     return
   }
 
-  const success = userStore.login(email.value, password.value)
+  const success = userStore.register(name.value, email.value, password.value)
   if (!success) {
-    errorMessage.value = 'Correo o contraseña incorrectos.'
+    errorMessage.value = 'Ese correo ya está registrado.'
     return
   }
 
@@ -34,10 +40,14 @@ function handleSubmit(): void {
         <AppLogo :size="44" />
       </div>
 
-      <h1>Iniciar sesión</h1>
-      <p class="login-card__subtitle">Entra para seguir el ritmo de tus materias.</p>
+      <h1>Crear cuenta</h1>
+      <p class="login-card__subtitle">Regístrate para empezar a organizar tus materias.</p>
 
       <form @submit.prevent="handleSubmit">
+        <div class="form-group">
+          <label for="name">Nombre</label>
+          <input id="name" v-model="name" type="text" class="input" placeholder="Tu nombre" />
+        </div>
         <div class="form-group">
           <label for="email">Correo</label>
           <input id="email" v-model="email" type="email" class="input" placeholder="tucorreo@studeasy.com" />
@@ -46,19 +56,18 @@ function handleSubmit(): void {
           <label for="password">Contraseña</label>
           <input id="password" v-model="password" type="password" class="input" placeholder="••••••" />
         </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirmar contraseña</label>
+          <input id="confirmPassword" v-model="confirmPassword" type="password" class="input" placeholder="••••••" />
+        </div>
 
         <p v-if="errorMessage" class="form-error">{{ errorMessage }}</p>
 
-        <button type="submit" class="btn btn-primary login-card__submit">Entrar</button>
+        <button type="submit" class="btn btn-primary login-card__submit">Crear cuenta</button>
       </form>
 
       <p class="login-card__hint">
-        ¿No tienes cuenta? <router-link to="/register">Regístrate</router-link>
-      </p>
-
-      <p class="login-card__hint">
-        Prueba con <strong>ana@studeasy.com</strong> / <strong>1234</strong> (estudiante) o
-        <strong>admin@studeasy.com</strong> / <strong>admin</strong>
+        ¿Ya tienes cuenta? <router-link to="/login">Inicia sesión</router-link>
       </p>
     </div>
   </div>

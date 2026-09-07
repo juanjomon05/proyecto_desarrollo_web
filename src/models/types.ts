@@ -27,6 +27,8 @@ export interface ActivityData {
   dueDate: string
   status?: ActivityStatus
   grade?: number | string | null
+  // Peso de la actividad dentro de la nota final de la materia, en porcentaje (0-100).
+  weight?: number | string | null
 }
 
 export interface DailyLogData {

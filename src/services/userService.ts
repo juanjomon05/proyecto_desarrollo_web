@@ -1,8 +1,8 @@
 // src/services/userService.ts
-// Lectura de usuarios. En este proyecto los usuarios se siembran en el seed,
-// no hay registro publico, asi que solo necesitamos lectura.
+// Lectura y registro de usuarios.
 
 import { User } from '@/models/User'
+import type { RegisterUserDTO } from './dtos'
 
 export function getAllUsers(): User[] {
   return User.getAll()
@@ -10,4 +10,9 @@ export function getAllUsers(): User[] {
 
 export function getUserByCredentials(email: string, password: string): User | null {
   return User.getByCredentials(email, password)
+}
+
+// Devuelve null si el correo ya esta registrado.
+export function registerUser({ name, email, password }: RegisterUserDTO): User | null {
+  return User.register({ name, email, password })
 }

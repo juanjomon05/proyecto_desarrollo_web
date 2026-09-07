@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { getAllActivities, getActivitySubjectId, updateActivity } from '@/services/activityService'
-import { getAllSubjects } from '@/services/subjectService'
+import { useUserStore } from '@/stores/userStore'
+import { getActivitiesForUser, getActivitySubjectId, updateActivity } from '@/services/activityService'
+import { getSubjectsByUser } from '@/services/subjectService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
@@ -11,6 +12,7 @@ import type { Activity } from '@/models/Activity'
 import type { Subject } from '@/models/Subject'
 import type { ActivityStatus } from '@/models/types'
 
+const userStore = useUserStore()
 const activities = ref<Activity[]>([])
 const subjects = ref<Subject[]>([])
 const selectedSubjectId = ref('')
@@ -34,8 +36,9 @@ const statusFilters: { value: ActivityStatus | ''; label: string }[] = [
 ]
 
 function loadData(): void {
-  activities.value = getAllActivities()
-  subjects.value = getAllSubjects()
+  if (!userStore.currentUser) return
+  activities.value = getActivitiesForUser(userStore.currentUser.id)
+  subjects.value = getSubjectsByUser(userStore.currentUser.id)
 }
 
 onMounted(loadData)

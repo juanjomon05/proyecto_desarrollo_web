@@ -2,6 +2,10 @@ import { getItem, setItem } from '../services/storage'
 import { KEYS, SESSION_KEY } from '../services/storageKeys'
 import type { UserData, UserRole } from './types'
 
+function saveRecords(users: UserData[]): void {
+  setItem(KEYS.users, users)
+}
+
 export class User implements UserData {
   id: string
   name: string
@@ -17,7 +21,7 @@ export class User implements UserData {
     this.role = role
   }
 
-  login(): User {
+  logIn(): User {
     setItem(SESSION_KEY, this.getters())
     return this
   }
@@ -57,5 +61,25 @@ export class User implements UserData {
     return User.from(
       User.getAll().find(user => user.email === email && user.passwordHash === password)
     )
+  }
+
+  static getByEmail(email: string): User | null {
+    return User.from(User.getAll().find(user => user.email === email))
+  }
+
+  static register({ name, email, password }: { name: string; email: string; password: string }): User | null {
+    if (User.getByEmail(email)) return null
+
+    const users = User.getAll().map(user => user.getters())
+    const newUser = new User({
+      id: crypto.randomUUID(),
+      name,
+      email,
+      passwordHash: password,
+      role: 'student'
+    })
+    users.push(newUser.getters())
+    saveRecords(users)
+    return newUser
   }
 }

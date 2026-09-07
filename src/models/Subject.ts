@@ -55,9 +55,13 @@ export class Subject implements SubjectData {
     return getRecords().map(subject => Subject.from(subject) as Subject)
   }
 
+  // Solo las materias que son literalmente del usuario. Antes tambien se incluian
+  // las que no tenian userId (pensadas como "materia global"), pero eso hacia que
+  // cualquier materia creada desde el panel de admin apareciera en la cuenta de
+  // TODOS los estudiantes, incluyendo una recien registrada.
   static getByUser(userId: string): Subject[] {
     return getRecords()
-      .filter(subject => !subject.userId || subject.userId === userId)
+      .filter(subject => subject.userId === userId)
       .map(subject => Subject.from(subject) as Subject)
   }
 

@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores/userStore'
 
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
+import RegisterView from '@/views/RegisterView.vue'
 import SubjectsView from '@/views/SubjectsView.vue'
 import SubjectDetailView from '@/views/SubjectDetailView.vue'
 import ActivitiesView from '@/views/ActivitiesView.vue'
@@ -23,6 +24,7 @@ declare module 'vue-router' {
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: HomeView },
   { path: '/login', name: 'login', component: LoginView },
+  { path: '/register', name: 'register', component: RegisterView },
 
   { path: '/subjects', name: 'subjects', component: SubjectsView, meta: { requiresAuth: true } },
   { path: '/subjects/:id', name: 'subject-detail', component: SubjectDetailView, meta: { requiresAuth: true } },

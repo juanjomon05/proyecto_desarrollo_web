@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import AppLogo from '@/components/AppLogo.vue'
 
 const userStore = useUserStore()
+const router = useRouter()
 const isMobileMenuOpen = ref(false)
 
 function handleLogout(): void {
   userStore.logout()
   isMobileMenuOpen.value = false
+  router.push('/login')
 }
 
 function closeMobileMenu(): void {
@@ -49,9 +51,9 @@ function initials(name: string): string {
         <router-link to="/tracking" class="sidebar__link" @click="closeMobileMenu">Seguimiento</router-link>
 
         <template v-if="userStore.isAdmin">
-          <p class="sidebar__section">
+          <router-link to="/admin/dashboard" class="sidebar__section" @click="closeMobileMenu">
             Administración <span class="admin-badge">Admin</span>
-          </p>
+          </router-link>
           <router-link to="/admin/subjects" class="sidebar__link" @click="closeMobileMenu">Materias</router-link>
           <router-link to="/admin/dashboard" class="sidebar__link" @click="closeMobileMenu">Dashboard</router-link>
         </template>
@@ -144,14 +146,22 @@ function initials(name: string): string {
 
 .sidebar__section {
   margin: 18px 0 4px;
-  padding: 0 12px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
   font-size: 0.72rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-text-muted);
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.sidebar__section:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .admin-badge {
