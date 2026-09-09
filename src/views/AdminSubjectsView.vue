@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getAllSubjects, deleteSubject } from '@/services/subjectService'
+import { SubjectService } from '@/services/subjectService'
 import DataTable from '@/components/DataTable.vue'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
@@ -15,12 +15,12 @@ const columns = [
 onMounted(loadSubjects)
 
 function loadSubjects(): void {
-  subjects.value = getAllSubjects()
+  subjects.value = SubjectService.getSubjects()
 }
 
 function handleDelete(id: string): void {
   if (confirm('¿Eliminar esta materia?')) {
-    deleteSubject(id)
+    SubjectService.deleteSubject(id)
     loadSubjects()
   }
 }

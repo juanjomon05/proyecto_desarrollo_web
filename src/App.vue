@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { UserService } from '@/services/userService'
 import { useUserStore } from '@/stores/userStore'
 import AppLogo from '@/components/AppLogo.vue'
 
@@ -9,7 +10,7 @@ const router = useRouter()
 const isMobileMenuOpen = ref(false)
 
 function handleLogout(): void {
-  userStore.logout()
+  UserService.logout()
   isMobileMenuOpen.value = false
   router.push('/login')
 }

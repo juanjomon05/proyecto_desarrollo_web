@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getSubjectById, createSubject, updateSubject } from '@/services/subjectService'
+import { SubjectService } from '@/services/subjectService'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,7 +16,7 @@ const errorMessage = ref('')
 
 onMounted(() => {
   if (subjectId.value) {
-    const subject = getSubjectById(subjectId.value)
+    const subject = SubjectService.getSubjectById(subjectId.value)
     if (subject) {
       form.value = { name: subject.name, professor: subject.professor, credits: String(subject.credits) }
     }
@@ -33,9 +33,9 @@ function handleSubmit(): void {
   const payload = { ...form.value, credits: Number(form.value.credits) }
 
   if (subjectId.value) {
-    updateSubject(subjectId.value, payload)
+    SubjectService.updateSubject(subjectId.value, payload)
   } else {
-    createSubject(payload)
+    SubjectService.createSubject(payload)
   }
 
   router.push('/admin/subjects')

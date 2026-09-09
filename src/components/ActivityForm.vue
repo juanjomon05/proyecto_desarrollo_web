@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useUserStore } from '@/stores/userStore'
-import { getSubjectsByUser } from '@/services/subjectService'
-import { getActivityById, getActivitySubjectId, createActivity, updateActivity } from '@/services/activityService'
+import { ActivityService } from '@/services/activityService'
+import { SubjectService } from '@/services/subjectService'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 import type { ActivityInterface, ActivityStatus, ActivityType } from '@/interfaces/ActivityInterface'
 
@@ -31,7 +31,7 @@ const errorMessage = ref('')
 
 onMounted(() => {
   if (userStore.currentUser) {
-    subjects.value = getSubjectsByUser(userStore.currentUser.id)
+    subjects.value = SubjectService.getSubjectsByUser(userStore.currentUser.id)
   }
 
   if (props.defaultSubjectId) {
@@ -39,9 +39,9 @@ onMounted(() => {
   }
 
   if (props.activityId) {
-    const activity = getActivityById(props.activityId)
+    const activity = ActivityService.getActivityById(props.activityId)
     if (activity) {
-      subjectId.value = getActivitySubjectId(activity.id)
+      subjectId.value = ActivityService.getActivitySubjectId(activity.id)
       title.value = activity.title
       type.value = activity.type
       dueDate.value = activity.dueDate
@@ -70,7 +70,7 @@ function handleSubmit(): void {
   const weightValue = weight.value === null || weight.value === '' ? null : Number(weight.value)
 
   const saved = props.activityId
-    ? updateActivity(props.activityId, {
+    ? ActivityService.updateActivity(props.activityId, {
         subjectId: subjectId.value,
         title: title.value,
         type: type.value,
@@ -79,7 +79,7 @@ function handleSubmit(): void {
         grade: grade.value === null || grade.value === '' ? null : Number(grade.value),
         weight: weightValue
       })
-    : createActivity({
+    : ActivityService.createActivity({
         subjectId: subjectId.value,
         title: title.value,
         type: type.value,

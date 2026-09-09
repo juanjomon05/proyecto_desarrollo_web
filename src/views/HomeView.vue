@@ -2,9 +2,9 @@
 import { ref, onMounted, computed } from 'vue'
 import Chart from 'chart.js/auto'
 import { useUserStore } from '@/stores/userStore'
-import { getSubjectsByUser } from '@/services/subjectService'
-import { getActivitiesForUser, getActivitiesBySubject } from '@/services/activityService'
-import { getDailyLogsByUser } from '@/services/dailyLogService'
+import { ActivityService } from '@/services/activityService'
+import { DailyLogService } from '@/services/dailyLogService'
+import { SubjectService } from '@/services/subjectService'
 import { calculateGradeProjection } from '@/utils/gradeProjection'
 import StatCard from '@/components/StatCard.vue'
 import ChartCard from '@/components/ChartCard.vue'
@@ -20,9 +20,9 @@ const logs = ref<DailyLogInterface[]>([])
 
 onMounted(() => {
   if (userStore.currentUser) {
-    subjects.value = getSubjectsByUser(userStore.currentUser.id)
-    activities.value = getActivitiesForUser(userStore.currentUser.id)
-    logs.value = getDailyLogsByUser(userStore.currentUser.id)
+    subjects.value = SubjectService.getSubjectsByUser(userStore.currentUser.id)
+    activities.value = ActivityService.getActivitiesForUser(userStore.currentUser.id)
+    logs.value = DailyLogService.getDailyLogsByUser(userStore.currentUser.id)
   }
   renderCharts()
 })
@@ -44,7 +44,7 @@ const avgSleepHours = computed(() => {
 // % ya calificado vs % pendiente por materia, para el grafico de progreso de notas.
 const subjectProgress = computed(() =>
   subjects.value.map(subject => {
-    const gradedWeight = calculateGradeProjection(getActivitiesBySubject(subject.id)).gradedWeight
+    const gradedWeight = calculateGradeProjection(ActivityService.getActivitiesBySubject(subject.id)).gradedWeight
     return { name: subject.name, graded: gradedWeight, remaining: Math.max(0, 100 - gradedWeight) }
   })
 )

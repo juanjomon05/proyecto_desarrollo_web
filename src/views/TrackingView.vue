@@ -2,8 +2,8 @@
 import { ref, onMounted } from 'vue'
 import Chart from 'chart.js/auto'
 import { useUserStore } from '@/stores/userStore'
-import { getDailyLogsByUser, createDailyLog } from '@/services/dailyLogService'
-import { getPerformanceData } from '@/services/performanceService'
+import { DailyLogService } from '@/services/dailyLogService'
+import { PerformanceService } from '@/services/performanceService'
 import ChartCard from '@/components/ChartCard.vue'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 
@@ -26,7 +26,7 @@ onMounted(() => {
 
 function loadLogs(): void {
   if (!userStore.currentUser) return
-  logs.value = getDailyLogsByUser(userStore.currentUser.id)
+  logs.value = DailyLogService.getDailyLogsByUser(userStore.currentUser.id)
 }
 
 function handleSubmit(): void {
@@ -38,7 +38,7 @@ function handleSubmit(): void {
   }
   errorMessage.value = ''
 
-  createDailyLog({
+  DailyLogService.createDailyLog({
     userId: userStore.currentUser.id,
     date: date.value,
     studyHours: Number(studyHours.value),
@@ -55,7 +55,7 @@ function handleSubmit(): void {
 function renderChart(): void {
   if (!userStore.currentUser || !chartCanvas.value) return
 
-  const data = getPerformanceData(userStore.currentUser.id, daysWindow.value)
+  const data = PerformanceService.getPerformanceData(userStore.currentUser.id, daysWindow.value)
 
   if (chartInstance) chartInstance.destroy()
 

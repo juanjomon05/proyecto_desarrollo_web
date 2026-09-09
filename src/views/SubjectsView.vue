@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/userStore'
-import { getSubjectsByUser } from '@/services/subjectService'
+import { SubjectService } from '@/services/subjectService'
 import Modal from '@/components/Modal.vue'
 import SubjectForm from '@/components/SubjectForm.vue'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
@@ -12,7 +12,7 @@ const isModalOpen = ref(false)
 
 function loadSubjects(): void {
   if (userStore.currentUser) {
-    subjects.value = getSubjectsByUser(userStore.currentUser.id)
+    subjects.value = SubjectService.getSubjectsByUser(userStore.currentUser.id)
   }
 }
 

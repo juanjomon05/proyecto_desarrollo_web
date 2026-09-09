@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useUserStore } from '@/stores/userStore'
-import { getActivitiesForUser, getActivitySubjectId, updateActivity } from '@/services/activityService'
-import { getSubjectsByUser } from '@/services/subjectService'
+import { ActivityService } from '@/services/activityService'
+import { SubjectService } from '@/services/subjectService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
@@ -36,8 +36,8 @@ const statusFilters: { value: ActivityStatus | ''; label: string }[] = [
 
 function loadData(): void {
   if (!userStore.currentUser) return
-  activities.value = getActivitiesForUser(userStore.currentUser.id)
-  subjects.value = getSubjectsByUser(userStore.currentUser.id)
+  activities.value = ActivityService.getActivitiesForUser(userStore.currentUser.id)
+  subjects.value = SubjectService.getSubjectsByUser(userStore.currentUser.id)
 }
 
 onMounted(loadData)
@@ -49,19 +49,19 @@ const subjectOptions = computed(() => [
 
 const filteredActivities = computed(() => {
   return activities.value.filter(a => {
-    const matchesSubject = !selectedSubjectId.value || getActivitySubjectId(a.id) === selectedSubjectId.value
+    const matchesSubject = !selectedSubjectId.value || ActivityService.getActivitySubjectId(a.id) === selectedSubjectId.value
     const matchesStatus = !selectedStatus.value || a.status === selectedStatus.value
     return matchesSubject && matchesStatus
   })
 })
 
 function subjectNameByActivity(activityId: string): string {
-  const subjectId = getActivitySubjectId(activityId)
+  const subjectId = ActivityService.getActivitySubjectId(activityId)
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 
 function markAsDone(id: string): void {
-  updateActivity(id, { status: 'completada' })
+  ActivityService.updateActivity(id, { status: 'completada' })
   loadData()
 }
 

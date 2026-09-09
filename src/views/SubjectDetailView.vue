@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { getSubjectById } from '@/services/subjectService'
-import { getActivitiesBySubject } from '@/services/activityService'
+import { ActivityService } from '@/services/activityService'
+import { SubjectService } from '@/services/subjectService'
 import { calculateGradeProjection, PASSING_GRADE } from '@/utils/gradeProjection'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
@@ -24,8 +24,8 @@ const columns = [
 
 onMounted(() => {
   const id = typeof route.params.id === 'string' ? route.params.id : ''
-  subject.value = getSubjectById(id)
-  activities.value = getActivitiesBySubject(id)
+  subject.value = SubjectService.getSubjectById(id)
+  activities.value = ActivityService.getActivitiesBySubject(id)
 })
 
 const projection = computed(() => calculateGradeProjection(activities.value))

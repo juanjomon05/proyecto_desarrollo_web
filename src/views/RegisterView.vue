@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/userStore'
+import { UserService } from '@/services/userService'
 import AppLogo from '@/components/AppLogo.vue'
 
 const router = useRouter()
-const userStore = useUserStore()
 
 const name = ref('')
 const email = ref('')
@@ -23,7 +22,7 @@ function handleSubmit(): void {
     return
   }
 
-  const success = userStore.register(name.value, email.value, password.value)
+  const success = UserService.registerUser({ name: name.value, email: email.value, password: password.value })
   if (!success) {
     errorMessage.value = 'Ese correo ya está registrado.'
     return

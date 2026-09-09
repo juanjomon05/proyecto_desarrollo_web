@@ -2,8 +2,8 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import Chart from 'chart.js/auto'
 import ApexCharts from 'apexcharts'
-import { getAllSubjects } from '@/services/subjectService'
-import { getAllActivities, getActivitySubjectId } from '@/services/activityService'
+import { ActivityService } from '@/services/activityService'
+import { SubjectService } from '@/services/subjectService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
@@ -29,8 +29,8 @@ const donutEl = ref<HTMLDivElement | null>(null)
 let donutChart: ApexCharts | null = null
 
 onMounted(() => {
-  subjects.value = getAllSubjects()
-  activities.value = getAllActivities()
+  subjects.value = SubjectService.getSubjects()
+  activities.value = ActivityService.getActivities()
   renderCharts()
 })
 
@@ -43,11 +43,11 @@ const subjectOptions = computed(() => [
 
 const filteredActivities = computed(() => {
   if (!selectedSubjectId.value) return activities.value
-  return activities.value.filter(a => getActivitySubjectId(a.id) === selectedSubjectId.value)
+  return activities.value.filter(a => ActivityService.getActivitySubjectId(a.id) === selectedSubjectId.value)
 })
 
 function subjectNameByActivity(activityId: string): string {
-  const subjectId = getActivitySubjectId(activityId)
+  const subjectId = ActivityService.getActivitySubjectId(activityId)
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 
