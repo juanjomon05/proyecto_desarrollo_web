@@ -4,12 +4,16 @@ import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 import type { CreateActivityDTO } from '@/dtos/CreateActivityDTO'
 import type { UpdateActivityDTO } from '@/dtos/UpdateActivityDTO'
 
+function normalizeOptionalNumber(value: unknown): number | null {
+  return value === '' || value === null || value === undefined ? null : Number(value)
+}
+
 function normalizeActivity(activity: ActivityInterface): ActivityInterface {
   return {
     ...activity,
     status: activity.status || 'pendiente',
-    grade: activity.grade === null || activity.grade === undefined ? null : Number(activity.grade),
-    weight: activity.weight === null || activity.weight === undefined ? null : Number(activity.weight)
+    grade: normalizeOptionalNumber(activity.grade),
+    weight: normalizeOptionalNumber(activity.weight)
   }
 }
 
@@ -44,7 +48,7 @@ export class ActivityService {
       dueDate,
       status: 'pendiente',
       grade: null,
-      weight: weight === null || weight === undefined ? null : Number(weight)
+      weight: normalizeOptionalNumber(weight)
     }
 
     useActivityStore().activities.push(activity)
