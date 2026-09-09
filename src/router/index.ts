@@ -48,12 +48,13 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const userStore = useUserStore()
+  const currentUser = userStore.currentUser
 
-  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+  if (to.meta.requiresAuth && !currentUser) {
     return { name: 'login' }
   }
 
-  if (to.meta.requiresAdmin && !userStore.isAdmin) {
+  if (to.meta.requiresAdmin && currentUser?.role !== 'admin') {
     return { name: 'home' }
   }
 })

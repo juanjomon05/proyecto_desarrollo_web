@@ -45,7 +45,3 @@ export class PerformanceService {
     }))
   }
 }
-
-export function getPerformanceData(userId: string, daysWindow = 3): PerformanceDataInterface[] {
-  return PerformanceService.getPerformanceData(userId, daysWindow)
-}

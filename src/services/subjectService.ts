@@ -52,27 +52,3 @@ export class SubjectService {
     store.subjects = store.subjects.filter(subject => subject.id !== id)
   }
 }
-
-export function getAllSubjects(): SubjectInterface[] {
-  return SubjectService.getSubjects()
-}
-
-export function getSubjectsByUser(userId: string): SubjectInterface[] {
-  return SubjectService.getSubjectsByUser(userId)
-}
-
-export function getSubjectById(id: string): SubjectInterface | null {
-  return SubjectService.getSubjectById(id)
-}
-
-export function createSubject(data: CreateSubjectDTO): SubjectInterface {
-  return SubjectService.createSubject(data)
-}
-
-export function updateSubject(id: string, changes: UpdateSubjectDTO): SubjectInterface | null {
-  return SubjectService.updateSubject(id, changes)
-}
-
-export function deleteSubject(id: string): void {
-  SubjectService.deleteSubject(id)
-}

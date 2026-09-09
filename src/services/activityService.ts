@@ -70,35 +70,3 @@ export class ActivityService {
     store.activities = store.activities.filter(activity => activity.id !== id)
   }
 }
-
-export function getAllActivities(): ActivityInterface[] {
-  return ActivityService.getActivities()
-}
-
-export function getActivitiesForUser(userId: string): ActivityInterface[] {
-  return ActivityService.getActivitiesForUser(userId)
-}
-
-export function getActivitiesBySubject(subjectId: string): ActivityInterface[] {
-  return ActivityService.getActivitiesBySubject(subjectId)
-}
-
-export function getActivityById(id: string): ActivityInterface | null {
-  return ActivityService.getActivityById(id)
-}
-
-export function getActivitySubjectId(id: string): string {
-  return ActivityService.getActivitySubjectId(id)
-}
-
-export function createActivity(data: CreateActivityDTO): ActivityInterface {
-  return ActivityService.createActivity(data)
-}
-
-export function updateActivity(id: string, changes: UpdateActivityDTO): ActivityInterface | null {
-  return ActivityService.updateActivity(id, changes)
-}
-
-export function deleteActivity(id: string): void {
-  ActivityService.deleteActivity(id)
-}

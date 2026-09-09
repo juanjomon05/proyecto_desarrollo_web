@@ -5,12 +5,10 @@ import { dailyLogSeeder } from '@/seeders/dailyLogSeeder'
 import { subjectSeeder } from '@/seeders/subjectSeeder'
 import { userSeeder } from '@/seeders/userSeeder'
 
-const PINIA_STATE_KEY = 'piniaState'
-
 export default class PiniaConfig {
   static init() {
     const pinia = createPinia()
-    const savedState = localStorage.getItem(PINIA_STATE_KEY)
+    const savedState = localStorage.getItem('piniaState')
 
     if (savedState) {
       pinia.state.value = JSON.parse(savedState)
@@ -30,13 +28,13 @@ export default class PiniaConfig {
           dailyLogs: dailyLogSeeder
         }
       }
-      localStorage.setItem(PINIA_STATE_KEY, JSON.stringify(pinia.state.value))
+      localStorage.setItem('piniaState', JSON.stringify(pinia.state.value))
     }
 
     watch(
       pinia.state,
       (state) => {
-        localStorage.setItem(PINIA_STATE_KEY, JSON.stringify(state))
+        localStorage.setItem('piniaState', JSON.stringify(state))
       },
       { deep: true }
     )

@@ -52,23 +52,3 @@ export class DailyLogService {
     store.dailyLogs = store.dailyLogs.filter(log => log.id !== id)
   }
 }
-
-export function getAllDailyLogs(): DailyLogInterface[] {
-  return DailyLogService.getDailyLogs()
-}
-
-export function getDailyLogsByUser(userId: string): DailyLogInterface[] {
-  return DailyLogService.getDailyLogsByUser(userId)
-}
-
-export function createDailyLog(data: CreateDailyLogDTO): DailyLogInterface {
-  return DailyLogService.createDailyLog(data)
-}
-
-export function updateDailyLog(id: string, changes: UpdateDailyLogDTO): DailyLogInterface | null {
-  return DailyLogService.updateDailyLog(id, changes)
-}
-
-export function deleteDailyLog(id: string): void {
-  DailyLogService.deleteDailyLog(id)
-}

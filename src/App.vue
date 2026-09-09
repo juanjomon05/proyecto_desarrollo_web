@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { UserService } from '@/services/userService'
 import { useUserStore } from '@/stores/userStore'
@@ -8,6 +8,8 @@ import AppLogo from '@/components/AppLogo.vue'
 const userStore = useUserStore()
 const router = useRouter()
 const isMobileMenuOpen = ref(false)
+const isLoggedIn = computed(() => userStore.currentUser !== null)
+const isAdmin = computed(() => userStore.currentUser?.role === 'admin')
 
 function handleLogout(): void {
   UserService.logout()
@@ -30,8 +32,8 @@ function initials(name: string): string {
 </script>
 
 <template>
-  <div class="shell" :class="{ 'shell--with-sidebar': userStore.isLoggedIn }">
-    <header v-if="userStore.isLoggedIn" class="topbar">
+  <div class="shell" :class="{ 'shell--with-sidebar': isLoggedIn }">
+    <header v-if="isLoggedIn" class="topbar">
       <button type="button" class="topbar__toggle" @click="isMobileMenuOpen = !isMobileMenuOpen" aria-label="Abrir menú">
         <span />
         <span />
@@ -40,7 +42,7 @@ function initials(name: string): string {
       <AppLogo :size="30" />
     </header>
 
-    <aside v-if="userStore.isLoggedIn" class="sidebar" :class="{ 'sidebar--open': isMobileMenuOpen }">
+    <aside v-if="isLoggedIn" class="sidebar" :class="{ 'sidebar--open': isMobileMenuOpen }">
       <div class="sidebar__brand">
         <AppLogo :size="34" />
       </div>
@@ -51,7 +53,7 @@ function initials(name: string): string {
         <router-link to="/activities" class="sidebar__link" @click="closeMobileMenu">Actividades</router-link>
         <router-link to="/tracking" class="sidebar__link" @click="closeMobileMenu">Seguimiento</router-link>
 
-        <template v-if="userStore.isAdmin">
+        <template v-if="isAdmin">
           <router-link to="/admin/dashboard" class="sidebar__section" @click="closeMobileMenu">
             Administración <span class="admin-badge">Admin</span>
           </router-link>
@@ -64,7 +66,7 @@ function initials(name: string): string {
         <div class="sidebar__avatar">{{ initials(userStore.currentUser?.name ?? '') }}</div>
         <div class="sidebar__user-info">
           <strong>{{ userStore.currentUser?.name }}</strong>
-          <span class="text-muted">{{ userStore.isAdmin ? 'Administrador' : 'Estudiante' }}</span>
+          <span class="text-muted">{{ isAdmin ? 'Administrador' : 'Estudiante' }}</span>
         </div>
         <button type="button" class="btn btn-ghost btn-sm" @click="handleLogout">Salir</button>
       </div>
@@ -73,7 +75,7 @@ function initials(name: string): string {
     <div v-if="isMobileMenuOpen" class="sidebar__scrim" @click="closeMobileMenu" />
 
     <main class="content">
-      <template v-if="!userStore.isLoggedIn">
+      <template v-if="!isLoggedIn">
         <RouterView />
       </template>
       <template v-else>

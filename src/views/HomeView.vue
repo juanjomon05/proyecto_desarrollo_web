@@ -17,6 +17,7 @@ const userStore = useUserStore()
 const subjects = ref<SubjectInterface[]>([])
 const activities = ref<ActivityInterface[]>([])
 const logs = ref<DailyLogInterface[]>([])
+const isLoggedIn = computed(() => userStore.currentUser !== null)
 
 onMounted(() => {
   if (userStore.currentUser) {
@@ -114,7 +115,7 @@ function renderCharts(): void {
 
 <template>
   <div class="page">
-    <template v-if="userStore.isLoggedIn">
+    <template v-if="isLoggedIn">
       <div class="hero card">
         <h1>Hola, {{ userStore.currentUser?.name }} 👋</h1>
         <p>Lleva el control de tus materias, actividades y hábitos de estudio en un solo lugar.</p>

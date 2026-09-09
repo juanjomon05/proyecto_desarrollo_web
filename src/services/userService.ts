@@ -44,15 +44,3 @@ export class UserService {
     return user
   }
 }
-
-export function getAllUsers(): UserInterface[] {
-  return UserService.getUsers()
-}
-
-export function getUserByCredentials(email: string, password: string): UserInterface | null {
-  return UserService.getUserByCredentials(email, password)
-}
-
-export function registerUser(data: RegisterUserDTO): UserInterface | null {
-  return UserService.registerUser(data)
-}
