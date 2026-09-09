@@ -8,13 +8,12 @@ import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
 import Modal from '@/components/Modal.vue'
 import ActivityForm from '@/components/ActivityForm.vue'
-import type { Activity } from '@/models/Activity'
-import type { Subject } from '@/models/Subject'
-import type { ActivityStatus } from '@/models/types'
+import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInterface'
+import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
 const userStore = useUserStore()
-const activities = ref<Activity[]>([])
-const subjects = ref<Subject[]>([])
+const activities = ref<ActivityInterface[]>([])
+const subjects = ref<SubjectInterface[]>([])
 const selectedSubjectId = ref('')
 const selectedStatus = ref<ActivityStatus | ''>('')
 const isModalOpen = ref(false)

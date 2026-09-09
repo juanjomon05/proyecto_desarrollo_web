@@ -1,18 +1,15 @@
-// src/services/performanceService.ts
-// Logica de analisis: cruza DailyLog (estudio/sueno) con Activity (notas).
-// No es un CRUD, es la funcionalidad diferenciadora del proyecto.
-
-import { DailyLog } from '@/models/DailyLog'
-import { getActivitiesForUser } from './activityService'
+import { ActivityService } from '@/services/activityService'
+import { DailyLogService } from '@/services/dailyLogService'
 import { getTodayLocalDate } from '@/utils/format'
-import type { PerformanceData } from '@/models/types'
+import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
+import type { PerformanceDataInterface } from '@/interfaces/PerformanceDataInterface'
 
 interface Averages {
   avgStudyHours: number | null
   avgSleepHours: number | null
 }
 
-function calculateAverages(logs: DailyLog[], endDate: string, days: number): Averages {
+function calculateAverages(logs: DailyLogInterface[], endDate: string, days: number): Averages {
   const end = new Date(endDate)
   const start = new Date(end)
   start.setDate(start.getDate() - (days - 1))
@@ -31,24 +28,24 @@ function calculateAverages(logs: DailyLog[], endDate: string, days: number): Ave
   return { avgStudyHours, avgSleepHours }
 }
 
-// El promedio de estudio/sueno se calcula sobre los ultimos `daysWindow` dias
-// contados desde HOY (no desde la fecha de vencimiento de cada actividad). Antes
-// se anclaba a la dueDate de cada actividad, asi que un registro de habitos hecho
-// "hoy" solo aparecia para las actividades cuya fecha de vencimiento coincidiera
-// por casualidad con esos dias, dando resultados que parecian aleatorios y que no
-// reaccionaban al registrar un nuevo dia ni al cambiar el selector.
-export function getPerformanceData(userId: string, daysWindow = 3): PerformanceData[] {
-  const logs = DailyLog.getByUser(userId)
-  const gradedActivities = getActivitiesForUser(userId).filter(activity => activity.grade !== null)
-  const today = getTodayLocalDate()
-  const { avgStudyHours, avgSleepHours } = calculateAverages(logs, today, daysWindow)
+export class PerformanceService {
+  static getPerformanceData(userId: string, daysWindow = 3): PerformanceDataInterface[] {
+    const logs = DailyLogService.getDailyLogsByUser(userId)
+    const gradedActivities = ActivityService.getActivitiesForUser(userId).filter(activity => activity.grade !== null)
+    const today = getTodayLocalDate()
+    const { avgStudyHours, avgSleepHours } = calculateAverages(logs, today, daysWindow)
 
-  return gradedActivities.map(activity => ({
-    activityId: activity.id,
-    activityTitle: activity.title,
-    dueDate: activity.dueDate,
-    grade: activity.grade,
-    avgStudyHours,
-    avgSleepHours
-  }))
+    return gradedActivities.map(activity => ({
+      activityId: activity.id,
+      activityTitle: activity.title,
+      dueDate: activity.dueDate,
+      grade: activity.grade,
+      avgStudyHours,
+      avgSleepHours
+    }))
+  }
+}
+
+export function getPerformanceData(userId: string, daysWindow = 3): PerformanceDataInterface[] {
+  return PerformanceService.getPerformanceData(userId, daysWindow)
 }

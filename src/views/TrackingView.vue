@@ -5,11 +5,11 @@ import { useUserStore } from '@/stores/userStore'
 import { getDailyLogsByUser, createDailyLog } from '@/services/dailyLogService'
 import { getPerformanceData } from '@/services/performanceService'
 import ChartCard from '@/components/ChartCard.vue'
-import type { DailyLog } from '@/models/DailyLog'
+import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 
 const userStore = useUserStore()
 
-const logs = ref<DailyLog[]>([])
+const logs = ref<DailyLogInterface[]>([])
 const date = ref('')
 const studyHours = ref('')
 const sleepHours = ref('')

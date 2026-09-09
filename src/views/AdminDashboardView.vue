@@ -8,12 +8,11 @@ import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
 import ChartCard from '@/components/ChartCard.vue'
-import type { Subject } from '@/models/Subject'
-import type { Activity } from '@/models/Activity'
-import type { ActivityStatus } from '@/models/types'
+import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInterface'
+import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
-const subjects = ref<Subject[]>([])
-const activities = ref<Activity[]>([])
+const subjects = ref<SubjectInterface[]>([])
+const activities = ref<ActivityInterface[]>([])
 const selectedSubjectId = ref('')
 
 const columns = [

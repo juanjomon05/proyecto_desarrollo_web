@@ -3,9 +3,8 @@ import { ref, onMounted, computed } from 'vue'
 import { useUserStore } from '@/stores/userStore'
 import { getSubjectsByUser } from '@/services/subjectService'
 import { getActivityById, getActivitySubjectId, createActivity, updateActivity } from '@/services/activityService'
-import type { Subject } from '@/models/Subject'
-import type { Activity } from '@/models/Activity'
-import type { ActivityStatus, ActivityType } from '@/models/types'
+import type { SubjectInterface } from '@/interfaces/SubjectInterface'
+import type { ActivityInterface, ActivityStatus, ActivityType } from '@/interfaces/ActivityInterface'
 
 const userStore = useUserStore()
 
@@ -15,12 +14,12 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  saved: [activity: Activity]
+  saved: [activity: ActivityInterface]
 }>()
 
 const isEditMode = computed(() => !!props.activityId)
 
-const subjects = ref<Subject[]>([])
+const subjects = ref<SubjectInterface[]>([])
 const subjectId = ref('')
 const title = ref('')
 const type = ref<ActivityType>('tarea')

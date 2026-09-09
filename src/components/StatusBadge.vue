@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { ActivityStatus } from '@/models/types'
+import type { ActivityStatus } from '@/interfaces/ActivityInterface'
 
 const props = defineProps<{ status: ActivityStatus }>()
 

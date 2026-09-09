@@ -3,7 +3,7 @@
 // promedio se necesita en las actividades pendientes para ganar la materia.
 // Escala colombiana: notas de 0.0 a 5.0, minimo para ganar = 3.0.
 
-import type { Activity } from '@/models/Activity'
+import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 
 export const PASSING_GRADE = 3
 export const MAX_GRADE = 5
@@ -19,7 +19,7 @@ export interface GradeProjection {
 }
 
 export function calculateGradeProjection(
-  activities: Activity[],
+  activities: ActivityInterface[],
   passingGrade = PASSING_GRADE,
   maxGrade = MAX_GRADE
 ): GradeProjection {

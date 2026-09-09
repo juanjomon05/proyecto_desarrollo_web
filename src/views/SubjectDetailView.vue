@@ -6,12 +6,12 @@ import { getActivitiesBySubject } from '@/services/activityService'
 import { calculateGradeProjection, PASSING_GRADE } from '@/utils/gradeProjection'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
-import type { Subject } from '@/models/Subject'
-import type { Activity } from '@/models/Activity'
+import type { ActivityInterface } from '@/interfaces/ActivityInterface'
+import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
 const route = useRoute()
-const subject = ref<Subject | null>(null)
-const activities = ref<Activity[]>([])
+const subject = ref<SubjectInterface | null>(null)
+const activities = ref<ActivityInterface[]>([])
 
 const columns = [
   { key: 'title', label: 'Título' },

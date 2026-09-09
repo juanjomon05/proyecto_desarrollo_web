@@ -2,9 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { getAllSubjects, deleteSubject } from '@/services/subjectService'
 import DataTable from '@/components/DataTable.vue'
-import type { Subject } from '@/models/Subject'
+import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
-const subjects = ref<Subject[]>([])
+const subjects = ref<SubjectInterface[]>([])
 
 const columns = [
   { key: 'name', label: 'Nombre' },

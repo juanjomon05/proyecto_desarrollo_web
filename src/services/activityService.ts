@@ -1,42 +1,104 @@
-// src/services/activityService.ts
-// CRUD de Activity. Ninguna view debe llamar a storage.ts directamente,
-// siempre pasa por aqui.
+import { useActivityStore } from '@/stores/activityStore'
+import { SubjectService } from '@/services/subjectService'
+import type { ActivityInterface } from '@/interfaces/ActivityInterface'
+import type { CreateActivityDTO } from '@/dtos/CreateActivityDTO'
+import type { UpdateActivityDTO } from '@/dtos/UpdateActivityDTO'
 
-import { Activity } from '@/models/Activity'
-import { getSubjectsByUser } from './subjectService'
-import type { CreateActivityDTO, UpdateActivityDTO } from './dtos'
-
-export function getAllActivities(): Activity[] {
-  return Activity.getAll()
+function normalizeActivity(activity: ActivityInterface): ActivityInterface {
+  return {
+    ...activity,
+    status: activity.status || 'pendiente',
+    grade: activity.grade === null || activity.grade === undefined ? null : Number(activity.grade),
+    weight: activity.weight === null || activity.weight === undefined ? null : Number(activity.weight)
+  }
 }
 
-// Actividades de las materias del usuario (ver Subject.getByUser). A diferencia
-// de getAllActivities(), no mezcla actividades de materias de otros usuarios.
-export function getActivitiesForUser(userId: string): Activity[] {
-  const visibleSubjectIds = new Set(getSubjectsByUser(userId).map(subject => subject.id))
-  return Activity.getAll().filter(activity => visibleSubjectIds.has(Activity.getSubjectId(activity.id)))
+export class ActivityService {
+  static getActivities(): ActivityInterface[] {
+    return useActivityStore().activities.map(normalizeActivity)
+  }
+
+  static getActivitiesForUser(userId: string): ActivityInterface[] {
+    const subjectIds = new Set(SubjectService.getSubjectsByUser(userId).map(subject => subject.id))
+    return this.getActivities().filter(activity => subjectIds.has(activity.subjectId))
+  }
+
+  static getActivitiesBySubject(subjectId: string): ActivityInterface[] {
+    return this.getActivities().filter(activity => activity.subjectId === subjectId)
+  }
+
+  static getActivityById(id: string): ActivityInterface | null {
+    return this.getActivities().find(activity => activity.id === id) || null
+  }
+
+  static getActivitySubjectId(id: string): string {
+    return this.getActivityById(id)?.subjectId || ''
+  }
+
+  static createActivity({ subjectId, title, type, dueDate, weight }: CreateActivityDTO): ActivityInterface {
+    const activity: ActivityInterface = {
+      id: crypto.randomUUID(),
+      subjectId,
+      title,
+      type,
+      dueDate,
+      status: 'pendiente',
+      grade: null,
+      weight: weight === null || weight === undefined ? null : Number(weight)
+    }
+
+    useActivityStore().activities.push(activity)
+    return activity
+  }
+
+  static updateActivity(id: string, changes: UpdateActivityDTO): ActivityInterface | null {
+    const store = useActivityStore()
+    const index = store.activities.findIndex(activity => activity.id === id)
+    if (index === -1) return null
+
+    const updatedActivity = normalizeActivity({
+      ...store.activities[index],
+      ...changes
+    })
+
+    store.activities[index] = updatedActivity
+    return updatedActivity
+  }
+
+  static deleteActivity(id: string): void {
+    const store = useActivityStore()
+    store.activities = store.activities.filter(activity => activity.id !== id)
+  }
 }
 
-export function getActivitiesBySubject(subjectId: string): Activity[] {
-  return Activity.getBySubject(subjectId)
+export function getAllActivities(): ActivityInterface[] {
+  return ActivityService.getActivities()
 }
 
-export function getActivityById(id: string): Activity | null {
-  return Activity.getById(id)
+export function getActivitiesForUser(userId: string): ActivityInterface[] {
+  return ActivityService.getActivitiesForUser(userId)
+}
+
+export function getActivitiesBySubject(subjectId: string): ActivityInterface[] {
+  return ActivityService.getActivitiesBySubject(subjectId)
+}
+
+export function getActivityById(id: string): ActivityInterface | null {
+  return ActivityService.getActivityById(id)
 }
 
 export function getActivitySubjectId(id: string): string {
-  return Activity.getSubjectId(id)
+  return ActivityService.getActivitySubjectId(id)
 }
 
-export function createActivity({ subjectId, title, type, dueDate, weight }: CreateActivityDTO): Activity {
-  return Activity.create({ subjectId, title, type, dueDate, weight })
+export function createActivity(data: CreateActivityDTO): ActivityInterface {
+  return ActivityService.createActivity(data)
 }
 
-export function updateActivity(id: string, changes: UpdateActivityDTO): Activity | null {
-  return Activity.update(id, changes)
+export function updateActivity(id: string, changes: UpdateActivityDTO): ActivityInterface | null {
+  return ActivityService.updateActivity(id, changes)
 }
 
 export function deleteActivity(id: string): void {
-  Activity.delete(id)
+  ActivityService.deleteActivity(id)
 }

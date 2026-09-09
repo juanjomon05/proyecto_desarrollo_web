@@ -4,10 +4,10 @@ import { useUserStore } from '@/stores/userStore'
 import { getSubjectsByUser } from '@/services/subjectService'
 import Modal from '@/components/Modal.vue'
 import SubjectForm from '@/components/SubjectForm.vue'
-import type { Subject } from '@/models/Subject'
+import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
 const userStore = useUserStore()
-const subjects = ref<Subject[]>([])
+const subjects = ref<SubjectInterface[]>([])
 const isModalOpen = ref(false)
 
 function loadSubjects(): void {

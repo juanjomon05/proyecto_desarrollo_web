@@ -2,10 +2,10 @@
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/userStore'
 import { createSubject } from '@/services/subjectService'
-import type { Subject } from '@/models/Subject'
+import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
 const emit = defineEmits<{
-  saved: [subject: Subject]
+  saved: [subject: SubjectInterface]
 }>()
 
 const userStore = useUserStore()

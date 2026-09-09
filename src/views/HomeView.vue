@@ -8,16 +8,15 @@ import { getDailyLogsByUser } from '@/services/dailyLogService'
 import { calculateGradeProjection } from '@/utils/gradeProjection'
 import StatCard from '@/components/StatCard.vue'
 import ChartCard from '@/components/ChartCard.vue'
-import type { Subject } from '@/models/Subject'
-import type { Activity } from '@/models/Activity'
-import type { DailyLog } from '@/models/DailyLog'
-import type { ActivityStatus } from '@/models/types'
+import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInterface'
+import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
+import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
 const userStore = useUserStore()
 
-const subjects = ref<Subject[]>([])
-const activities = ref<Activity[]>([])
-const logs = ref<DailyLog[]>([])
+const subjects = ref<SubjectInterface[]>([])
+const activities = ref<ActivityInterface[]>([])
+const logs = ref<DailyLogInterface[]>([])
 
 onMounted(() => {
   if (userStore.currentUser) {
