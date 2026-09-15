@@ -1,4 +1,7 @@
+// external imports
 import type { StateTree } from 'pinia'
+
+// internal imports
 import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
