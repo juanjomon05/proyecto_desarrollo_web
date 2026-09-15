@@ -1,3 +1,4 @@
+// internal imports
 import type { UserInterface } from '@/interfaces/UserInterface'
 
 export const userSeeder: UserInterface[] = [

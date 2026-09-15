@@ -1,5 +1,8 @@
+// external imports
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+
+// internal imports
 import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 
 export const useActivityStore = defineStore('activity', () => {

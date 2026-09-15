@@ -1,3 +1,4 @@
+// internal imports
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 
 export const dailyLogSeeder: DailyLogInterface[] = [

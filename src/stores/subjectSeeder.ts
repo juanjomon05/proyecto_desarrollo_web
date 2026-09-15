@@ -1,3 +1,4 @@
+// internal imports
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
 export const subjectSeeder: SubjectInterface[] = [

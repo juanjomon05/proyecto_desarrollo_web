@@ -1,3 +1,4 @@
+// internal imports
 import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 
 export const activitySeeder: ActivityInterface[] = [

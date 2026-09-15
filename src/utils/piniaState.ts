@@ -1,7 +1,8 @@
-import { activitySeeder } from '@/seeders/activitySeeder'
-import { dailyLogSeeder } from '@/seeders/dailyLogSeeder'
-import { subjectSeeder } from '@/seeders/subjectSeeder'
-import { userSeeder } from '@/seeders/userSeeder'
+// internal imports
+import { activitySeeder } from '@/stores/activitySeeder'
+import { dailyLogSeeder } from '@/stores/dailyLogSeeder'
+import { subjectSeeder } from '@/stores/subjectSeeder'
+import { userSeeder } from '@/stores/userSeeder'
 import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 import type { PiniaStateInterface } from '@/interfaces/PiniaStateInterface'
