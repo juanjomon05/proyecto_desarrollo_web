@@ -1,13 +1,14 @@
 <script setup lang="ts">
+// external imports
 import { ref, onMounted } from 'vue'
 import Chart from 'chart.js/auto'
-import { useUserStore } from '@/stores/userStore'
+
+// internal imports
 import { DailyLogService } from '@/services/dailyLogService'
 import { PerformanceService } from '@/services/performanceService'
+import { UserService } from '@/services/userService'
 import ChartCard from '@/components/ChartCard.vue'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
-
-const userStore = useUserStore()
 
 const logs = ref<DailyLogInterface[]>([])
 const date = ref('')
@@ -25,12 +26,14 @@ onMounted(() => {
 })
 
 function loadLogs(): void {
-  if (!userStore.currentUser) return
-  logs.value = DailyLogService.getDailyLogsByUser(userStore.currentUser.id)
+  const user = UserService.getCurrentUser()
+  if (!user) return
+  logs.value = DailyLogService.getDailyLogsByUser(user.id)
 }
 
 function handleSubmit(): void {
-  if (!userStore.currentUser) return
+  const user = UserService.getCurrentUser()
+  if (!user) return
 
   if (!date.value || !studyHours.value || !sleepHours.value) {
     errorMessage.value = 'Completa fecha, horas de estudio y horas de sueño.'
@@ -39,7 +42,7 @@ function handleSubmit(): void {
   errorMessage.value = ''
 
   DailyLogService.createDailyLog({
-    userId: userStore.currentUser.id,
+    userId: user.id,
     date: date.value,
     studyHours: Number(studyHours.value),
     sleepHours: Number(sleepHours.value)
@@ -53,9 +56,10 @@ function handleSubmit(): void {
 }
 
 function renderChart(): void {
-  if (!userStore.currentUser || !chartCanvas.value) return
+  const user = UserService.getCurrentUser()
+  if (!user || !chartCanvas.value) return
 
-  const data = PerformanceService.getPerformanceData(userStore.currentUser.id, daysWindow.value)
+  const data = PerformanceService.getPerformanceData(user.id, daysWindow.value)
 
   if (chartInstance) chartInstance.destroy()
 
