@@ -1,3 +1,4 @@
+// internal imports
 import { useUserStore } from '@/stores/userStore'
 import type { UserInterface } from '@/interfaces/UserInterface'
 import type { RegisterUserDTO } from '@/dtos/RegisterUserDTO'
@@ -5,6 +6,20 @@ import type { RegisterUserDTO } from '@/dtos/RegisterUserDTO'
 export class UserService {
   static getUsers(): UserInterface[] {
     return useUserStore().users
+  }
+
+  // Unica forma en que el resto de la app (vistas, componentes, router) puede saber
+  // quien esta logueado, sin importar el store directamente.
+  static getCurrentUser(): UserInterface | null {
+    return useUserStore().currentUser
+  }
+
+  static isLoggedIn(): boolean {
+    return this.getCurrentUser() !== null
+  }
+
+  static isAdmin(): boolean {
+    return this.getCurrentUser()?.role === 'admin'
   }
 
   static getUserByCredentials(email: string, password: string): UserInterface | null {
