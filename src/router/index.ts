@@ -1,7 +1,10 @@
 // src/router/index.ts
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import { useUserStore } from '@/stores/userStore'
 
+// external imports
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+
+// internal imports
+import { UserService } from '@/services/userService'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
@@ -47,14 +50,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const userStore = useUserStore()
-  const currentUser = userStore.currentUser
-
-  if (to.meta.requiresAuth && !currentUser) {
+  if (to.meta.requiresAuth && !UserService.isLoggedIn()) {
     return { name: 'login' }
   }
 
-  if (to.meta.requiresAdmin && currentUser?.role !== 'admin') {
+  if (to.meta.requiresAdmin && !UserService.isAdmin()) {
     return { name: 'home' }
   }
 })
