@@ -1,8 +1,11 @@
 <script setup lang="ts">
+// external imports
 import { ref, onMounted, computed } from 'vue'
-import { useUserStore } from '@/stores/userStore'
+
+// internal imports
 import { ActivityService } from '@/services/activityService'
 import { SubjectService } from '@/services/subjectService'
+import { UserService } from '@/services/userService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
@@ -11,7 +14,6 @@ import ActivityForm from '@/components/ActivityForm.vue'
 import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInterface'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
-const userStore = useUserStore()
 const activities = ref<ActivityInterface[]>([])
 const subjects = ref<SubjectInterface[]>([])
 const selectedSubjectId = ref('')
@@ -35,9 +37,10 @@ const statusFilters: { value: ActivityStatus | ''; label: string }[] = [
 ]
 
 function loadData(): void {
-  if (!userStore.currentUser) return
-  activities.value = ActivityService.getActivitiesForUser(userStore.currentUser.id)
-  subjects.value = SubjectService.getSubjectsByUser(userStore.currentUser.id)
+  const user = UserService.getCurrentUser()
+  if (!user) return
+  activities.value = ActivityService.getActivitiesForUser(user.id)
+  subjects.value = SubjectService.getSubjectsByUser(user.id)
 }
 
 onMounted(loadData)
