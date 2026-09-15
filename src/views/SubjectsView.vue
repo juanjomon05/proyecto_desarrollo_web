@@ -1,18 +1,21 @@
 <script setup lang="ts">
+// external imports
 import { ref, onMounted } from 'vue'
-import { useUserStore } from '@/stores/userStore'
+
+// internal imports
 import { SubjectService } from '@/services/subjectService'
+import { UserService } from '@/services/userService'
 import Modal from '@/components/Modal.vue'
 import SubjectForm from '@/components/SubjectForm.vue'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
-const userStore = useUserStore()
 const subjects = ref<SubjectInterface[]>([])
 const isModalOpen = ref(false)
 
 function loadSubjects(): void {
-  if (userStore.currentUser) {
-    subjects.value = SubjectService.getSubjectsByUser(userStore.currentUser.id)
+  const user = UserService.getCurrentUser()
+  if (user) {
+    subjects.value = SubjectService.getSubjectsByUser(user.id)
   }
 }
 
