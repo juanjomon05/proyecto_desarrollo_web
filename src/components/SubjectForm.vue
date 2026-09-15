@@ -1,14 +1,15 @@
 <script setup lang="ts">
+// external imports
 import { ref } from 'vue'
-import { useUserStore } from '@/stores/userStore'
+
+// internal imports
 import { SubjectService } from '@/services/subjectService'
+import { UserService } from '@/services/userService'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
 const emit = defineEmits<{
   saved: [subject: SubjectInterface]
 }>()
-
-const userStore = useUserStore()
 
 const name = ref('')
 const professor = ref('')
@@ -20,14 +21,15 @@ function handleSubmit(): void {
     errorMessage.value = 'Completa nombre, profesor y créditos.'
     return
   }
-  if (!userStore.currentUser) return
+  const user = UserService.getCurrentUser()
+  if (!user) return
   errorMessage.value = ''
 
   const saved = SubjectService.createSubject({
     name: name.value,
     professor: professor.value,
     credits: Number(credits.value),
-    userId: userStore.currentUser.id
+    userId: user.id
   })
 
   emit('saved', saved)
