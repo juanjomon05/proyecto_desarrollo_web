@@ -1,12 +1,13 @@
 <script setup lang="ts">
+// external imports
 import { ref, onMounted, computed } from 'vue'
-import { useUserStore } from '@/stores/userStore'
+
+// internal imports
 import { ActivityService } from '@/services/activityService'
 import { SubjectService } from '@/services/subjectService'
+import { UserService } from '@/services/userService'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 import type { ActivityInterface, ActivityStatus, ActivityType } from '@/interfaces/ActivityInterface'
-
-const userStore = useUserStore()
 
 const props = defineProps<{
   activityId?: string
@@ -30,8 +31,9 @@ const weight = ref<number | string | null>(null)
 const errorMessage = ref('')
 
 onMounted(() => {
-  if (userStore.currentUser) {
-    subjects.value = SubjectService.getSubjectsByUser(userStore.currentUser.id)
+  const user = UserService.getCurrentUser()
+  if (user) {
+    subjects.value = SubjectService.getSubjectsByUser(user.id)
   }
 
   if (props.defaultSubjectId) {
