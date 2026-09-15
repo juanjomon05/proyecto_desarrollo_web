@@ -1,10 +1,13 @@
 <script setup lang="ts">
+// external imports
 import { ref, onMounted, computed } from 'vue'
 import Chart from 'chart.js/auto'
-import { useUserStore } from '@/stores/userStore'
+
+// internal imports
 import { ActivityService } from '@/services/activityService'
 import { DailyLogService } from '@/services/dailyLogService'
 import { SubjectService } from '@/services/subjectService'
+import { UserService } from '@/services/userService'
 import { calculateGradeProjection } from '@/utils/gradeProjection'
 import StatCard from '@/components/StatCard.vue'
 import ChartCard from '@/components/ChartCard.vue'
@@ -12,18 +15,18 @@ import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInt
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
-const userStore = useUserStore()
-
 const subjects = ref<SubjectInterface[]>([])
 const activities = ref<ActivityInterface[]>([])
 const logs = ref<DailyLogInterface[]>([])
-const isLoggedIn = computed(() => userStore.currentUser !== null)
+const currentUser = computed(() => UserService.getCurrentUser())
+const isLoggedIn = computed(() => UserService.isLoggedIn())
 
 onMounted(() => {
-  if (userStore.currentUser) {
-    subjects.value = SubjectService.getSubjectsByUser(userStore.currentUser.id)
-    activities.value = ActivityService.getActivitiesForUser(userStore.currentUser.id)
-    logs.value = DailyLogService.getDailyLogsByUser(userStore.currentUser.id)
+  const user = UserService.getCurrentUser()
+  if (user) {
+    subjects.value = SubjectService.getSubjectsByUser(user.id)
+    activities.value = ActivityService.getActivitiesForUser(user.id)
+    logs.value = DailyLogService.getDailyLogsByUser(user.id)
   }
   renderCharts()
 })
@@ -117,7 +120,7 @@ function renderCharts(): void {
   <div class="page">
     <template v-if="isLoggedIn">
       <div class="hero card">
-        <h1>Hola, {{ userStore.currentUser?.name }} 👋</h1>
+        <h1>Hola, {{ currentUser?.name }} 👋</h1>
         <p>Lleva el control de tus materias, actividades y hábitos de estudio en un solo lugar.</p>
       </div>
 
