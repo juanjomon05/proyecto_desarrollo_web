@@ -1,19 +1,12 @@
+// internal imports
 import { useDailyLogStore } from '@/stores/dailyLogStore'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 import type { CreateDailyLogDTO } from '@/dtos/CreateDailyLogDTO'
 import type { UpdateDailyLogDTO } from '@/dtos/UpdateDailyLogDTO'
 
-function normalizeLog(log: DailyLogInterface): DailyLogInterface {
-  return {
-    ...log,
-    studyHours: Number(log.studyHours),
-    sleepHours: Number(log.sleepHours)
-  }
-}
-
 export class DailyLogService {
   static getDailyLogs(): DailyLogInterface[] {
-    return useDailyLogStore().dailyLogs.map(normalizeLog)
+    return useDailyLogStore().dailyLogs.map(log => this.normalizeLog(log))
   }
 
   static getDailyLogsByUser(userId: string): DailyLogInterface[] {
@@ -38,7 +31,7 @@ export class DailyLogService {
     const index = store.dailyLogs.findIndex(log => log.id === id)
     if (index === -1) return null
 
-    const updatedLog = normalizeLog({
+    const updatedLog = this.normalizeLog({
       ...store.dailyLogs[index],
       ...changes
     })
@@ -50,5 +43,14 @@ export class DailyLogService {
   static deleteDailyLog(id: string): void {
     const store = useDailyLogStore()
     store.dailyLogs = store.dailyLogs.filter(log => log.id !== id)
+  }
+
+  // private helpers
+  private static normalizeLog(log: DailyLogInterface): DailyLogInterface {
+    return {
+      ...log,
+      studyHours: Number(log.studyHours),
+      sleepHours: Number(log.sleepHours)
+    }
   }
 }
