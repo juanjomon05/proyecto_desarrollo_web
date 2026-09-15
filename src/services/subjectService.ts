@@ -1,3 +1,4 @@
+// internal imports
 import { useSubjectStore } from '@/stores/subjectStore'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 import type { CreateSubjectDTO } from '@/dtos/CreateSubjectDTO'
