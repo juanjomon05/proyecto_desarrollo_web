@@ -1,15 +1,17 @@
 <script setup lang="ts">
+// external imports
 import { computed, ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
+
+// internal imports
 import { UserService } from '@/services/userService'
-import { useUserStore } from '@/stores/userStore'
 import AppLogo from '@/components/AppLogo.vue'
 
-const userStore = useUserStore()
 const router = useRouter()
 const isMobileMenuOpen = ref(false)
-const isLoggedIn = computed(() => userStore.currentUser !== null)
-const isAdmin = computed(() => userStore.currentUser?.role === 'admin')
+const currentUser = computed(() => UserService.getCurrentUser())
+const isLoggedIn = computed(() => UserService.isLoggedIn())
+const isAdmin = computed(() => UserService.isAdmin())
 
 function handleLogout(): void {
   UserService.logout()
@@ -63,9 +65,9 @@ function initials(name: string): string {
       </nav>
 
       <div class="sidebar__user">
-        <div class="sidebar__avatar">{{ initials(userStore.currentUser?.name ?? '') }}</div>
+        <div class="sidebar__avatar">{{ initials(currentUser?.name ?? '') }}</div>
         <div class="sidebar__user-info">
-          <strong>{{ userStore.currentUser?.name }}</strong>
+          <strong>{{ currentUser?.name }}</strong>
           <span class="text-muted">{{ isAdmin ? 'Administrador' : 'Estudiante' }}</span>
         </div>
         <button type="button" class="btn btn-ghost btn-sm" @click="handleLogout">Salir</button>
