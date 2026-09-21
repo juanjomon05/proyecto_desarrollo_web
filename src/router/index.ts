@@ -4,7 +4,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 // internal imports
-import { AuthService } from '@/services/authService'
+import { configureRouterGuards } from '@/router/accessControl'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
@@ -49,14 +49,6 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to) => {
-  if (to.meta.requiresAuth && !AuthService.isLoggedIn()) {
-    return { name: 'login' }
-  }
-
-  if (to.meta.requiresAdmin && !AuthService.isAdmin()) {
-    return { name: 'home' }
-  }
-})
+configureRouterGuards(router)
 
 export default router
