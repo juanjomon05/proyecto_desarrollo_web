@@ -7,7 +7,7 @@ import Chart from 'chart.js/auto'
 import { ActivityService } from '@/services/activityService'
 import { DailyLogService } from '@/services/dailyLogService'
 import { SubjectService } from '@/services/subjectService'
-import { UserService } from '@/services/userService'
+import { AuthService } from '@/services/authService'
 import { calculateGradeProjection } from '@/utils/gradeProjection'
 import StatCard from '@/components/StatCard.vue'
 import ChartCard from '@/components/ChartCard.vue'
@@ -18,11 +18,11 @@ import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 const subjects = ref<SubjectInterface[]>([])
 const activities = ref<ActivityInterface[]>([])
 const logs = ref<DailyLogInterface[]>([])
-const currentUser = computed(() => UserService.getCurrentUser())
-const isLoggedIn = computed(() => UserService.isLoggedIn())
+const currentUser = computed(() => AuthService.getCurrentUser())
+const isLoggedIn = computed(() => AuthService.isLoggedIn())
 
 onMounted(() => {
-  const user = UserService.getCurrentUser()
+  const user = AuthService.getCurrentUser()
   if (user) {
     subjects.value = SubjectService.getSubjectsByUser(user.id)
     activities.value = ActivityService.getActivitiesForUser(user.id)

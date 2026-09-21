@@ -5,7 +5,7 @@ import { ref, onMounted, computed } from 'vue'
 // internal imports
 import { ActivityService } from '@/services/activityService'
 import { SubjectService } from '@/services/subjectService'
-import { UserService } from '@/services/userService'
+import { AuthService } from '@/services/authService'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 import type { ActivityInterface, ActivityStatus, ActivityType } from '@/interfaces/ActivityInterface'
 
@@ -31,7 +31,7 @@ const weight = ref<number | string | null>(null)
 const errorMessage = ref('')
 
 onMounted(() => {
-  const user = UserService.getCurrentUser()
+  const user = AuthService.getCurrentUser()
   if (user) {
     subjects.value = SubjectService.getSubjectsByUser(user.id)
   }

@@ -5,7 +5,7 @@ import { ref, onMounted, computed } from 'vue'
 // internal imports
 import { ActivityService } from '@/services/activityService'
 import { SubjectService } from '@/services/subjectService'
-import { UserService } from '@/services/userService'
+import { AuthService } from '@/services/authService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
@@ -37,7 +37,7 @@ const statusFilters: { value: ActivityStatus | ''; label: string }[] = [
 ]
 
 function loadData(): void {
-  const user = UserService.getCurrentUser()
+  const user = AuthService.getCurrentUser()
   if (!user) return
   activities.value = ActivityService.getActivitiesForUser(user.id)
   subjects.value = SubjectService.getSubjectsByUser(user.id)

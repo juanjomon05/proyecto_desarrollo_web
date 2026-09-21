@@ -4,17 +4,17 @@ import { computed, ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 
 // internal imports
-import { UserService } from '@/services/userService'
+import { AuthService } from '@/services/authService'
 import AppLogo from '@/components/AppLogo.vue'
 
 const router = useRouter()
 const isMobileMenuOpen = ref(false)
-const currentUser = computed(() => UserService.getCurrentUser())
-const isLoggedIn = computed(() => UserService.isLoggedIn())
-const isAdmin = computed(() => UserService.isAdmin())
+const currentUser = computed(() => AuthService.getCurrentUser())
+const isLoggedIn = computed(() => AuthService.isLoggedIn())
+const isAdmin = computed(() => AuthService.isAdmin())
 
 function handleLogout(): void {
-  UserService.logout()
+  AuthService.logout()
   isMobileMenuOpen.value = false
   router.push('/login')
 }

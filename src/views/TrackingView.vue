@@ -6,7 +6,7 @@ import Chart from 'chart.js/auto'
 // internal imports
 import { DailyLogService } from '@/services/dailyLogService'
 import { PerformanceService } from '@/services/performanceService'
-import { UserService } from '@/services/userService'
+import { AuthService } from '@/services/authService'
 import ChartCard from '@/components/ChartCard.vue'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 
@@ -26,13 +26,13 @@ onMounted(() => {
 })
 
 function loadLogs(): void {
-  const user = UserService.getCurrentUser()
+  const user = AuthService.getCurrentUser()
   if (!user) return
   logs.value = DailyLogService.getDailyLogsByUser(user.id)
 }
 
 function handleSubmit(): void {
-  const user = UserService.getCurrentUser()
+  const user = AuthService.getCurrentUser()
   if (!user) return
 
   if (!date.value || !studyHours.value || !sleepHours.value) {
@@ -56,7 +56,7 @@ function handleSubmit(): void {
 }
 
 function renderChart(): void {
-  const user = UserService.getCurrentUser()
+  const user = AuthService.getCurrentUser()
   if (!user || !chartCanvas.value) return
 
   const data = PerformanceService.getPerformanceData(user.id, daysWindow.value)

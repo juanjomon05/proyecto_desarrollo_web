@@ -4,7 +4,7 @@ import { ref, onMounted } from 'vue'
 
 // internal imports
 import { SubjectService } from '@/services/subjectService'
-import { UserService } from '@/services/userService'
+import { AuthService } from '@/services/authService'
 import Modal from '@/components/Modal.vue'
 import SubjectForm from '@/components/SubjectForm.vue'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
@@ -13,7 +13,7 @@ const subjects = ref<SubjectInterface[]>([])
 const isModalOpen = ref(false)
 
 function loadSubjects(): void {
-  const user = UserService.getCurrentUser()
+  const user = AuthService.getCurrentUser()
   if (user) {
     subjects.value = SubjectService.getSubjectsByUser(user.id)
   }

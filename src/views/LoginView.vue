@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { UserService } from '@/services/userService'
+import { AuthService } from '@/services/authService'
 import AppLogo from '@/components/AppLogo.vue'
 
 const router = useRouter()
@@ -16,7 +16,7 @@ function handleSubmit(): void {
     return
   }
 
-  const success = UserService.login(email.value, password.value)
+  const success = AuthService.login(email.value, password.value)
   if (!success) {
     errorMessage.value = 'Correo o contraseña incorrectos.'
     return

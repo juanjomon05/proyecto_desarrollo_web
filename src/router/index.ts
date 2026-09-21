@@ -4,7 +4,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 // internal imports
-import { UserService } from '@/services/userService'
+import { AuthService } from '@/services/authService'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
@@ -50,11 +50,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  if (to.meta.requiresAuth && !UserService.isLoggedIn()) {
+  if (to.meta.requiresAuth && !AuthService.isLoggedIn()) {
     return { name: 'login' }
   }
 
-  if (to.meta.requiresAdmin && !UserService.isAdmin()) {
+  if (to.meta.requiresAdmin && !AuthService.isAdmin()) {
     return { name: 'home' }
   }
 })

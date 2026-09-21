@@ -4,7 +4,7 @@ import { ref } from 'vue'
 
 // internal imports
 import { SubjectService } from '@/services/subjectService'
-import { UserService } from '@/services/userService'
+import { AuthService } from '@/services/authService'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
 const emit = defineEmits<{
@@ -21,7 +21,7 @@ function handleSubmit(): void {
     errorMessage.value = 'Completa nombre, profesor y créditos.'
     return
   }
-  const user = UserService.getCurrentUser()
+  const user = AuthService.getCurrentUser()
   if (!user) return
   errorMessage.value = ''
 
