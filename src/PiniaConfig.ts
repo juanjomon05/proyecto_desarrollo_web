@@ -9,10 +9,14 @@ import { subjectSeeder } from '@/seeders/SubjectSeeder'
 import { userSeeder } from '@/seeders/UserSeeder'
 
 export default class PiniaConfig {
+  // Se cambia el nombre cuando cambia la forma del estado guardado, para que el
+  // navegador no cargue datos con el formato anterior y se usen los seeders.
+  private static readonly STORAGE_KEY = 'piniaState_v2'
+
   public static init() {
     const pinia = createPinia()
 
-    const savedState = localStorage.getItem('piniaState')
+    const savedState = localStorage.getItem(this.STORAGE_KEY)
 
     if (savedState) {
       pinia.state.value = JSON.parse(savedState)
@@ -35,13 +39,13 @@ export default class PiniaConfig {
         }
       }
 
-      localStorage.setItem('piniaState', JSON.stringify(pinia.state.value))
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(pinia.state.value))
     }
 
     watch(
       pinia.state,
       (state) => {
-        localStorage.setItem('piniaState', JSON.stringify(state))
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(state))
       },
       { deep: true }
     )
