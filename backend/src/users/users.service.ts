@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 // internal imports
 import { User } from './entities/user.entity.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
+import { UpdateUserDto } from './dto/update-user.dto.js';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,18 @@ export class UsersService {
 
   create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.usersRepository.create(createUserDto);
+
+    return this.usersRepository.save(user);
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User | null> {
+    const user = await this.usersRepository.findOneBy({ id });
+
+    if (!user) {
+      return null;
+    }
+
+    this.usersRepository.merge(user, updateUserDto);
 
     return this.usersRepository.save(user);
   }
