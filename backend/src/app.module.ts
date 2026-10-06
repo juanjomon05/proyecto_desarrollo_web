@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 // internal imports
 import { UsersModule } from './users/users.module.js';
+import { SubjectsModule } from './subjects/subjects.module.js';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersModule } from './users/users.module.js';
       synchronize: true,
     }),
     UsersModule,
+    SubjectsModule,
   ],
 })
 export class AppModule {}
