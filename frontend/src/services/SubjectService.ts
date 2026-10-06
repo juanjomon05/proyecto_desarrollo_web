@@ -9,25 +9,26 @@ export class SubjectService {
     return useSubjectStore().subjects
   }
 
-  static getSubjectsByUser(userId: string): SubjectInterface[] {
+  static getSubjectsByUser(userId: number): SubjectInterface[] {
     return this.getSubjects().filter(subject => subject.userId === userId)
   }
 
-  static getSubjectById(id: string): SubjectInterface | null {
+  static getSubjectById(id: number): SubjectInterface | null {
     return this.getSubjects().find(subject => subject.id === id) || null
   }
 
   static createSubject(subject: CreateSubjectDTO): SubjectInterface {
+    const store = useSubjectStore()
     const createdSubject: SubjectInterface = {
-      id: crypto.randomUUID(),
+      id: Math.max(0, ...store.subjects.map(item => item.id)) + 1,
       ...subject
     }
 
-    useSubjectStore().subjects.push(createdSubject)
+    store.subjects.push(createdSubject)
     return createdSubject
   }
 
-  static updateSubject(id: string, changes: UpdateSubjectDTO): SubjectInterface | null {
+  static updateSubject(id: number, changes: UpdateSubjectDTO): SubjectInterface | null {
     const store = useSubjectStore()
     const index = store.subjects.findIndex(subject => subject.id === id)
     if (index === -1) return null
@@ -41,7 +42,7 @@ export class SubjectService {
     return updatedSubject
   }
 
-  static deleteSubject(id: string): void {
+  static deleteSubject(id: number): void {
     const store = useSubjectStore()
     store.subjects = store.subjects.filter(subject => subject.id !== id)
   }

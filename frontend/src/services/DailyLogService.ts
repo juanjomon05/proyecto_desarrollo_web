@@ -9,21 +9,22 @@ export class DailyLogService {
     return useDailyLogStore().dailyLogs
   }
 
-  static getDailyLogsByUser(userId: string): DailyLogInterface[] {
+  static getDailyLogsByUser(userId: number): DailyLogInterface[] {
     return this.getDailyLogs().filter(log => log.userId === userId)
   }
 
   static createDailyLog(log: CreateDailyLogDTO): DailyLogInterface {
+    const store = useDailyLogStore()
     const createdLog: DailyLogInterface = {
-      id: crypto.randomUUID(),
+      id: Math.max(0, ...store.dailyLogs.map(item => item.id)) + 1,
       ...log
     }
 
-    useDailyLogStore().dailyLogs.push(createdLog)
+    store.dailyLogs.push(createdLog)
     return createdLog
   }
 
-  static updateDailyLog(id: string, changes: UpdateDailyLogDTO): DailyLogInterface | null {
+  static updateDailyLog(id: number, changes: UpdateDailyLogDTO): DailyLogInterface | null {
     const store = useDailyLogStore()
     const index = store.dailyLogs.findIndex(log => log.id === id)
     if (index === -1) return null
@@ -37,7 +38,7 @@ export class DailyLogService {
     return updatedLog
   }
 
-  static deleteDailyLog(id: string): void {
+  static deleteDailyLog(id: number): void {
     const store = useDailyLogStore()
     store.dailyLogs = store.dailyLogs.filter(log => log.id !== id)
   }

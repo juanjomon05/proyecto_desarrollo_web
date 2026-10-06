@@ -11,8 +11,8 @@ import type { ActivityInterface, ActivityStatus, ActivityType } from '@/interfac
 
 // props
 const props = defineProps<{
-  activityId?: string
-  defaultSubjectId?: string
+  activityId?: number
+  defaultSubjectId?: number
 }>()
 
 // emits
@@ -25,7 +25,7 @@ const isEditMode = computed(() => !!props.activityId)
 
 // reactive variables
 const subjects = ref<SubjectInterface[]>([])
-const subjectId = ref('')
+const subjectId = ref<number | ''>('')
 const title = ref('')
 const type = ref<ActivityType>('tarea')
 const dueDate = ref('')

@@ -47,16 +47,16 @@ watch(selectedSubjectId, renderCharts)
 // computed variables
 const subjectOptions = computed(() => [
   { value: '', label: 'Todas las materias' },
-  ...subjects.value.map(s => ({ value: s.id, label: s.name }))
+  ...subjects.value.map(s => ({ value: String(s.id), label: s.name }))
 ])
 
 const filteredActivities = computed(() => {
   if (!selectedSubjectId.value) return activities.value
-  return activities.value.filter(a => a.subjectId === selectedSubjectId.value)
+  return activities.value.filter(a => String(a.subjectId) === selectedSubjectId.value)
 })
 
 // functions
-function subjectName(subjectId: string): string {
+function subjectName(subjectId: number): string {
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 

@@ -17,12 +17,13 @@ export class UserService {
   }
 
   static createUser(user: CreateUserDTO): UserInterface {
+    const store = useUserStore()
     const createdUser: UserInterface = {
-      id: crypto.randomUUID(),
+      id: Math.max(0, ...store.users.map(item => item.id)) + 1,
       ...user
     }
 
-    useUserStore().users.push(createdUser)
+    store.users.push(createdUser)
     return createdUser
   }
 }

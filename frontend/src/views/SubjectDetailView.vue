@@ -30,7 +30,7 @@ const activities = ref<ActivityInterface[]>([])
 
 // lifecycle
 onMounted(() => {
-  const id = typeof route.params.id === 'string' ? route.params.id : ''
+  const id = Number(route.params.id)
   subject.value = SubjectService.getSubjectById(id)
   activities.value = ActivityService.getActivitiesBySubject(id)
 })

@@ -11,8 +11,8 @@ const route = useRoute()
 const router = useRouter()
 
 // computed variables
-const subjectId = computed<string | undefined>(() =>
-  typeof route.params.id === 'string' ? route.params.id : undefined
+const subjectId = computed<number | undefined>(() =>
+  typeof route.params.id === 'string' ? Number(route.params.id) : undefined
 )
 const isEditMode = computed(() => !!subjectId.value)
 

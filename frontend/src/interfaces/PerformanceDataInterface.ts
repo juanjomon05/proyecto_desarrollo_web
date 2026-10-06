@@ -1,6 +1,6 @@
 // main interface
 export interface PerformanceDataInterface {
-  activityId: string
+  activityId: number
   activityTitle: string
   dueDate: string
   grade: number | null

@@ -52,24 +52,24 @@ onMounted(loadData)
 // computed variables
 const subjectOptions = computed(() => [
   { value: '', label: 'Todas las materias' },
-  ...subjects.value.map(s => ({ value: s.id, label: s.name }))
+  ...subjects.value.map(s => ({ value: String(s.id), label: s.name }))
 ])
 
 const filteredActivities = computed(() => {
   return activities.value.filter(a => {
-    const matchesSubject = !selectedSubjectId.value || a.subjectId === selectedSubjectId.value
+    const matchesSubject = !selectedSubjectId.value || String(a.subjectId) === selectedSubjectId.value
     const matchesStatus = !selectedStatus.value || a.status === selectedStatus.value
     return matchesSubject && matchesStatus
   })
 })
 
 // functions
-function subjectName(subjectId: string): string {
+function subjectName(subjectId: number): string {
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 
 // handlers
-function markAsDone(id: string): void {
+function markAsDone(id: number): void {
   ActivityService.updateActivity(id, { status: 'completada' })
   loadData()
 }

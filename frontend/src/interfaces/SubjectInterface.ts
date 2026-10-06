@@ -1,7 +1,7 @@
 // main interface
 export interface SubjectInterface {
-  id: string
-  userId?: string
+  id: number
+  userId?: number | null
   name: string
   professor: string
   credits: number

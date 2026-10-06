@@ -26,7 +26,7 @@ function loadSubjects(): void {
 }
 
 // handlers
-function handleDelete(id: string): void {
+function handleDelete(id: number): void {
   if (confirm('¿Eliminar esta materia?')) {
     SubjectService.deleteSubject(id)
     loadSubjects()

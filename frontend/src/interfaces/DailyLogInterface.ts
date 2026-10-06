@@ -1,7 +1,7 @@
 // main interface
 export interface DailyLogInterface {
-  id: string
-  userId: string
+  id: number
+  userId: number
   date: string
   studyHours: number
   sleepHours: number

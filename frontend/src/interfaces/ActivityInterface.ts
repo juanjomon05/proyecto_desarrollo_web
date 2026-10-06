@@ -4,8 +4,8 @@ export type ActivityStatus = 'pendiente' | 'en progreso' | 'completada'
 
 // main interface
 export interface ActivityInterface {
-  id: string
-  subjectId: string
+  id: number
+  subjectId: number
   title: string
   type: ActivityType
   dueDate: string

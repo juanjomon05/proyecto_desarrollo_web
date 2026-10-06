@@ -11,8 +11,8 @@ const route = useRoute()
 const router = useRouter()
 
 // computed variables
-const activityId = computed<string | undefined>(() =>
-  typeof route.params.id === 'string' ? route.params.id : undefined
+const activityId = computed<number | undefined>(() =>
+  typeof route.params.id === 'string' ? Number(route.params.id) : undefined
 )
 
 // handlers
