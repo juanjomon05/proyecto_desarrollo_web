@@ -7,15 +7,18 @@ import { SubjectService } from '@/services/SubjectService'
 import { AuthService } from '@/services/AuthService'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
+// emits
 const emit = defineEmits<{
   saved: [subject: SubjectInterface]
 }>()
 
+// reactive variables
 const name = ref('')
 const professor = ref('')
 const credits = ref('')
 const errorMessage = ref('')
 
+// handlers
 function handleSubmit(): void {
   if (!name.value || !professor.value || !credits.value) {
     errorMessage.value = 'Completa nombre, profesor y créditos.'

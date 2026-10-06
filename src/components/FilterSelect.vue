@@ -1,14 +1,17 @@
 <script setup lang="ts">
+// props
 defineProps<{
   modelValue: string
   options: { value: string; label: string }[]
   label?: string
 }>()
 
+// emits
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
+// handlers
 function onChange(event: Event): void {
   emit('update:modelValue', (event.target as HTMLSelectElement).value)
 }

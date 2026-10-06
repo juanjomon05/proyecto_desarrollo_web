@@ -1,15 +1,21 @@
 <script setup lang="ts">
+// external imports
 import { computed } from 'vue'
+
+// internal imports
 import type { ActivityStatus } from '@/interfaces/ActivityInterface'
 
+// props
 const props = defineProps<{ status: ActivityStatus }>()
 
+// variables
 const labels: Record<ActivityStatus, string> = {
   pendiente: 'Pendiente',
   'en progreso': 'En progreso',
   completada: 'Completada'
 }
 
+// computed variables
 const modifierClass = computed(() => `status-badge--${props.status.replace(' ', '-')}`)
 </script>
 

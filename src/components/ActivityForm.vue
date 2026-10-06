@@ -9,17 +9,21 @@ import { AuthService } from '@/services/AuthService'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 import type { ActivityInterface, ActivityStatus, ActivityType } from '@/interfaces/ActivityInterface'
 
+// props
 const props = defineProps<{
   activityId?: string
   defaultSubjectId?: string
 }>()
 
+// emits
 const emit = defineEmits<{
   saved: [activity: ActivityInterface]
 }>()
 
+// computed variables
 const isEditMode = computed(() => !!props.activityId)
 
+// reactive variables
 const subjects = ref<SubjectInterface[]>([])
 const subjectId = ref('')
 const title = ref('')
@@ -30,6 +34,7 @@ const grade = ref<number | string | null>(null)
 const weight = ref<number | string | null>(null)
 const errorMessage = ref('')
 
+// lifecycle
 onMounted(() => {
   const user = AuthService.getCurrentUser()
   if (user) {
@@ -54,6 +59,7 @@ onMounted(() => {
   }
 })
 
+// handlers
 function handleSubmit(): void {
   if (!subjectId.value || !title.value || !dueDate.value) {
     errorMessage.value = 'Completa materia, título y fecha de entrega.'

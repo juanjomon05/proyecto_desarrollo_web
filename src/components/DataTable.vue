@@ -1,4 +1,5 @@
 <script setup lang="ts" generic="T extends object">
+// props
 defineProps<{
   columns: { key: string; label: string }[]
   rows: T[]
@@ -6,6 +7,7 @@ defineProps<{
   emptyText?: string
 }>()
 
+// functions
 function cellValue(row: object, key: string): unknown {
   return (row as Record<string, unknown>)[key]
 }

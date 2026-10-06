@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// props
 withDefaults(defineProps<{ withWordmark?: boolean; size?: number }>(), {
   withWordmark: true,
   size: 36

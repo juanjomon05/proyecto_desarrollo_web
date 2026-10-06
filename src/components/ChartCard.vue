@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// props
 defineProps<{ title: string }>()
 </script>
 

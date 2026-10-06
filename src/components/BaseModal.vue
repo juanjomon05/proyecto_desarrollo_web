@@ -1,5 +1,8 @@
 <script setup lang="ts">
+// props
 defineProps<{ title?: string }>()
+
+// emits
 const emit = defineEmits<{ close: [] }>()
 </script>
 
