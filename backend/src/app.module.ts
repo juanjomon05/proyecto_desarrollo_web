@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module.js';
 import { SubjectsModule } from './subjects/subjects.module.js';
 import { ActivitiesModule } from './activities/activities.module.js';
 import { DailyLogsModule } from './daily-logs/daily-logs.module.js';
+import { AuthModule } from './auth/auth.module.js';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DailyLogsModule } from './daily-logs/daily-logs.module.js';
     SubjectsModule,
     ActivitiesModule,
     DailyLogsModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
