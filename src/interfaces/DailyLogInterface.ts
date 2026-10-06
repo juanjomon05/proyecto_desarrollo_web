@@ -1,3 +1,4 @@
+// main interface
 export interface DailyLogInterface {
   id: string
   userId: string

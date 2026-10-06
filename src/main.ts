@@ -1,7 +1,8 @@
-import './assets/main.css'
-
+// external imports
 import { createApp } from 'vue'
 
+// internal imports
+import './assets/main.css'
 import App from './App.vue'
 import router from './router'
 import PiniaConfig from './PiniaConfig'
