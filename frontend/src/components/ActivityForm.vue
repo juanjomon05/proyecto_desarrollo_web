@@ -38,7 +38,7 @@ const errorMessage = ref('')
 onMounted(async () => {
   const user = AuthService.getCurrentUser()
   if (user) {
-    subjects.value = SubjectService.getSubjectsByUser(user.id)
+    subjects.value = await SubjectService.getSubjectsByUser(user.id)
   }
 
   if (props.defaultSubjectId) {

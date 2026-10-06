@@ -19,7 +19,7 @@ const credits = ref('')
 const errorMessage = ref('')
 
 // handlers
-function handleSubmit(): void {
+async function handleSubmit(): Promise<void> {
   if (!name.value || !professor.value || !credits.value) {
     errorMessage.value = 'Completa nombre, profesor y créditos.'
     return
@@ -28,7 +28,7 @@ function handleSubmit(): void {
   if (!user) return
   errorMessage.value = ''
 
-  const saved = SubjectService.createSubject({
+  const saved = await SubjectService.createSubject({
     name: name.value,
     professor: professor.value,
     credits: Number(credits.value),

@@ -21,15 +21,15 @@ const columns = [
 onMounted(loadSubjects)
 
 // functions
-function loadSubjects(): void {
-  subjects.value = SubjectService.getSubjects()
+async function loadSubjects(): Promise<void> {
+  subjects.value = await SubjectService.getSubjects()
 }
 
 // handlers
-function handleDelete(id: number): void {
+async function handleDelete(id: number): Promise<void> {
   if (confirm('¿Eliminar esta materia?')) {
-    SubjectService.deleteSubject(id)
-    loadSubjects()
+    await SubjectService.deleteSubject(id)
+    await loadSubjects()
   }
 }
 </script>

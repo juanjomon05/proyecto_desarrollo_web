@@ -21,9 +21,9 @@ const form = ref({ name: '', professor: '', credits: '' })
 const errorMessage = ref('')
 
 // lifecycle
-onMounted(() => {
+onMounted(async () => {
   if (subjectId.value) {
-    const subject = SubjectService.getSubjectById(subjectId.value)
+    const subject = await SubjectService.getSubjectById(subjectId.value)
     if (subject) {
       form.value = { name: subject.name, professor: subject.professor, credits: String(subject.credits) }
     }
@@ -31,7 +31,7 @@ onMounted(() => {
 })
 
 // handlers
-function handleSubmit(): void {
+async function handleSubmit(): Promise<void> {
   if (!form.value.name || !form.value.professor) {
     errorMessage.value = 'Completa nombre y profesor.'
     return
@@ -41,9 +41,9 @@ function handleSubmit(): void {
   const payload = { ...form.value, credits: Number(form.value.credits) }
 
   if (subjectId.value) {
-    SubjectService.updateSubject(subjectId.value, payload)
+    await SubjectService.updateSubject(subjectId.value, payload)
   } else {
-    SubjectService.createSubject(payload)
+    await SubjectService.createSubject(payload)
   }
 
   router.push('/admin/subjects')

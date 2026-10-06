@@ -14,10 +14,10 @@ const subjects = ref<SubjectInterface[]>([])
 const isModalOpen = ref(false)
 
 // functions
-function loadSubjects(): void {
+async function loadSubjects(): Promise<void> {
   const user = AuthService.getCurrentUser()
   if (user) {
-    subjects.value = SubjectService.getSubjectsByUser(user.id)
+    subjects.value = await SubjectService.getSubjectsByUser(user.id)
   }
 }
 
@@ -25,9 +25,9 @@ function loadSubjects(): void {
 onMounted(loadSubjects)
 
 // handlers
-function handleSaved(): void {
+async function handleSaved(): Promise<void> {
   isModalOpen.value = false
-  loadSubjects()
+  await loadSubjects()
 }
 </script>
 

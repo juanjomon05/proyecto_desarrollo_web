@@ -1,69 +1,66 @@
 // external imports
-import { beforeEach, describe, expect, it } from 'vitest'
-import { createPinia, setActivePinia } from 'pinia'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import axios from 'axios'
 
 // internal imports
 import { SubjectService } from '@/services/SubjectService'
+import type { SubjectInterface } from '@/interfaces/SubjectInterface'
+
+vi.mock('axios')
+
+const subject: SubjectInterface = { id: 1, userId: 1, name: 'Cálculo III', professor: 'Ing. Vargas', credits: 4 }
 
 beforeEach(() => {
-  setActivePinia(createPinia())
+  vi.resetAllMocks()
 })
 
 describe('SubjectService', () => {
-  it('crea una materia y le asigna un id', () => {
-    const subject = SubjectService.createSubject({
-      name: 'Cálculo III',
-      professor: 'Ing. Vargas',
-      credits: 4,
-      userId: 1
-    })
+  it('getSubjects consulta /api/subjects', async () => {
+    vi.mocked(axios.get).mockResolvedValue({ data: [subject] })
 
-    expect(subject.id).toBeTruthy()
-    expect(subject.name).toBe('Cálculo III')
-    expect(subject.credits).toBe(4)
+    expect(await SubjectService.getSubjects()).toEqual([subject])
+    expect(axios.get).toHaveBeenCalledWith(expect.stringMatching(/\/api\/subjects$/))
   })
 
-  it('lista todas las materias creadas', () => {
-    SubjectService.createSubject({ name: 'Materia A', professor: 'Prof A', credits: 3, userId: 1 })
-    SubjectService.createSubject({ name: 'Materia B', professor: 'Prof B', credits: 2, userId: 2 })
+  it('getSubjectsByUser consulta las materias del usuario', async () => {
+    vi.mocked(axios.get).mockResolvedValue({ data: [subject] })
 
-    expect(SubjectService.getSubjects()).toHaveLength(2)
+    await SubjectService.getSubjectsByUser(1)
+
+    expect(axios.get).toHaveBeenCalledWith(expect.stringMatching(/\/api\/subjects\/user\/1$/))
   })
 
-  it('getSubjectsByUser solo devuelve las materias de ese usuario, sin mezclar otras cuentas', () => {
-    SubjectService.createSubject({ name: 'De Ana', professor: 'Prof A', credits: 3, userId: 1 })
-    SubjectService.createSubject({ name: 'De Otro', professor: 'Prof B', credits: 2, userId: 2 })
-    SubjectService.createSubject({ name: 'Sin dueño (admin)', professor: 'Prof C', credits: 1 })
+  it('getSubjectById devuelve la materia y null si no existe', async () => {
+    vi.mocked(axios.get).mockResolvedValue({ data: subject })
+    expect((await SubjectService.getSubjectById(1))?.name).toBe('Cálculo III')
 
-    const anaSubjects = SubjectService.getSubjectsByUser(1)
-
-    expect(anaSubjects).toHaveLength(1)
-    expect(anaSubjects[0].name).toBe('De Ana')
+    vi.mocked(axios.get).mockResolvedValue({ data: '' })
+    expect(await SubjectService.getSubjectById(999)).toBeNull()
   })
 
-  it('getSubjectById encuentra la materia correcta y null si no existe', () => {
-    const created = SubjectService.createSubject({ name: 'Física', professor: 'Prof X', credits: 3, userId: 1 })
+  it('createSubject envia la materia al backend', async () => {
+    vi.mocked(axios.post).mockResolvedValue({ data: subject })
+    const newSubject = { name: 'Cálculo III', professor: 'Ing. Vargas', credits: 4, userId: 1 }
 
-    expect(SubjectService.getSubjectById(created.id)?.name).toBe('Física')
-    expect(SubjectService.getSubjectById(999)).toBeNull()
+    expect(await SubjectService.createSubject(newSubject)).toEqual(subject)
+    expect(axios.post).toHaveBeenCalledWith(expect.stringMatching(/\/api\/subjects$/), newSubject)
   })
 
-  it('updateSubject actualiza los campos y devuelve null si el id no existe', () => {
-    const created = SubjectService.createSubject({ name: 'Química', professor: 'Prof Y', credits: 3, userId: 1 })
+  it('updateSubject envia los cambios y devuelve null si el id no existe', async () => {
+    vi.mocked(axios.patch).mockResolvedValue({ data: { ...subject, credits: 5 } })
 
-    const updated = SubjectService.updateSubject(created.id, { credits: 5 })
+    expect((await SubjectService.updateSubject(1, { credits: 5 }))?.credits).toBe(5)
+    expect(axios.patch).toHaveBeenCalledWith(expect.stringMatching(/\/api\/subjects\/1$/), { credits: 5 })
 
-    expect(updated?.credits).toBe(5)
-    expect(updated?.name).toBe('Química')
-    expect(SubjectService.updateSubject(999, { credits: 1 })).toBeNull()
+    vi.mocked(axios.patch).mockResolvedValue({ data: '' })
+    expect(await SubjectService.updateSubject(999, { credits: 1 })).toBeNull()
   })
 
-  it('deleteSubject elimina la materia', () => {
-    const created = SubjectService.createSubject({ name: 'Borrar', professor: 'Prof Z', credits: 3, userId: 1 })
+  it('deleteSubject llama a DELETE /api/subjects/:id', async () => {
+    vi.mocked(axios.delete).mockResolvedValue({ data: '' })
 
-    SubjectService.deleteSubject(created.id)
+    await SubjectService.deleteSubject(1)
 
-    expect(SubjectService.getSubjectById(created.id)).toBeNull()
-    expect(SubjectService.getSubjects()).toHaveLength(0)
+    expect(axios.delete).toHaveBeenCalledWith(expect.stringMatching(/\/api\/subjects\/1$/))
   })
 })

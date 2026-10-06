@@ -27,7 +27,7 @@ const isLoggedIn = computed(() => AuthService.isLoggedIn())
 onMounted(async () => {
   const user = AuthService.getCurrentUser()
   if (user) {
-    subjects.value = SubjectService.getSubjectsByUser(user.id)
+    subjects.value = await SubjectService.getSubjectsByUser(user.id)
     activities.value = await ActivityService.getActivitiesForUser(user.id)
     logs.value = DailyLogService.getDailyLogsByUser(user.id)
   }

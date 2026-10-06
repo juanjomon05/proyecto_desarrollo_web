@@ -43,7 +43,7 @@ async function loadData(): Promise<void> {
   const user = AuthService.getCurrentUser()
   if (!user) return
   activities.value = await ActivityService.getActivitiesForUser(user.id)
-  subjects.value = SubjectService.getSubjectsByUser(user.id)
+  subjects.value = await SubjectService.getSubjectsByUser(user.id)
 }
 
 // lifecycle

@@ -36,7 +36,7 @@ let donutChart: ApexCharts | null = null
 
 // lifecycle
 onMounted(async () => {
-  subjects.value = SubjectService.getSubjects()
+  subjects.value = await SubjectService.getSubjects()
   activities.value = await ActivityService.getActivities()
   renderCharts()
 })

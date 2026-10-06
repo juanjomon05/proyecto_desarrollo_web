@@ -1,49 +1,40 @@
+// external imports
+import axios from 'axios'
+
 // internal imports
-import { useSubjectStore } from '@/stores/SubjectStore'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 import type { CreateSubjectDTO } from '@/dtos/CreateSubjectDTO'
 import type { UpdateSubjectDTO } from '@/dtos/UpdateSubjectDTO'
 
 export class SubjectService {
-  static getSubjects(): SubjectInterface[] {
-    return useSubjectStore().subjects
+  private static readonly API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/subjects`
+
+  static async getSubjects(): Promise<SubjectInterface[]> {
+    const { data } = await axios.get<SubjectInterface[]>(this.API_URL)
+    return data
   }
 
-  static getSubjectsByUser(userId: number): SubjectInterface[] {
-    return this.getSubjects().filter(subject => subject.userId === userId)
+  static async getSubjectsByUser(userId: number): Promise<SubjectInterface[]> {
+    const { data } = await axios.get<SubjectInterface[]>(`${this.API_URL}/user/${userId}`)
+    return data
   }
 
-  static getSubjectById(id: number): SubjectInterface | null {
-    return this.getSubjects().find(subject => subject.id === id) || null
+  static async getSubjectById(id: number): Promise<SubjectInterface | null> {
+    const { data } = await axios.get<SubjectInterface | null>(`${this.API_URL}/${id}`)
+    return data || null
   }
 
-  static createSubject(subject: CreateSubjectDTO): SubjectInterface {
-    const store = useSubjectStore()
-    const createdSubject: SubjectInterface = {
-      id: Math.max(0, ...store.subjects.map(item => item.id)) + 1,
-      ...subject
-    }
-
-    store.subjects.push(createdSubject)
-    return createdSubject
+  static async createSubject(subject: CreateSubjectDTO): Promise<SubjectInterface> {
+    const { data } = await axios.post<SubjectInterface>(this.API_URL, subject)
+    return data
   }
 
-  static updateSubject(id: number, changes: UpdateSubjectDTO): SubjectInterface | null {
-    const store = useSubjectStore()
-    const index = store.subjects.findIndex(subject => subject.id === id)
-    if (index === -1) return null
-
-    const updatedSubject: SubjectInterface = {
-      ...store.subjects[index],
-      ...changes
-    }
-
-    store.subjects[index] = updatedSubject
-    return updatedSubject
+  static async updateSubject(id: number, changes: UpdateSubjectDTO): Promise<SubjectInterface | null> {
+    const { data } = await axios.patch<SubjectInterface | null>(`${this.API_URL}/${id}`, changes)
+    return data || null
   }
 
-  static deleteSubject(id: number): void {
-    const store = useSubjectStore()
-    store.subjects = store.subjects.filter(subject => subject.id !== id)
+  static async deleteSubject(id: number): Promise<void> {
+    await axios.delete(`${this.API_URL}/${id}`)
   }
 }
