@@ -10,12 +10,12 @@ beforeEach(() => {
 })
 
 describe('DailyLogService', () => {
-  it('crea un registro diario con las horas convertidas a numero', () => {
+  it('crea un registro diario con id', () => {
     const log = DailyLogService.createDailyLog({
       userId: 'u1',
       date: '2026-09-01',
-      studyHours: '3' as unknown as number,
-      sleepHours: '7' as unknown as number
+      studyHours: 3,
+      sleepHours: 7
     })
 
     expect(log.id).toBeTruthy()

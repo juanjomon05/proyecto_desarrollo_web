@@ -48,26 +48,22 @@ describe('ActivityService', () => {
     expect(anaActivities[0].title).toBe('Actividad de Ana')
   })
 
-  it('getActivitiesBySubject y getActivitySubjectId filtran correctamente', () => {
+  it('getActivitiesBySubject filtra por materia', () => {
     const subjectA = SubjectService.createSubject({ name: 'A', professor: 'Prof', credits: 3, userId: 'u1' })
     const subjectB = SubjectService.createSubject({ name: 'B', professor: 'Prof', credits: 3, userId: 'u1' })
-    const activity = ActivityService.createActivity({ subjectId: subjectA.id, title: 'Solo de A', type: 'tarea', dueDate: '2026-10-01', weight: null })
+    ActivityService.createActivity({ subjectId: subjectA.id, title: 'Solo de A', type: 'tarea', dueDate: '2026-10-01', weight: null })
     ActivityService.createActivity({ subjectId: subjectB.id, title: 'Solo de B', type: 'tarea', dueDate: '2026-10-01', weight: null })
 
     expect(ActivityService.getActivitiesBySubject(subjectA.id)).toHaveLength(1)
-    expect(ActivityService.getActivitySubjectId(activity.id)).toBe(subjectA.id)
   })
 
-  it('updateActivity actualiza nota y peso, y normaliza valores vacíos a null', () => {
+  it('updateActivity actualiza nota y estado, y devuelve null si el id no existe', () => {
     const subject = SubjectService.createSubject({ name: 'Materia', professor: 'Prof', credits: 3, userId: 'u1' })
     const activity = ActivityService.createActivity({ subjectId: subject.id, title: 'Examen', type: 'examen', dueDate: '2026-10-01', weight: 100 })
 
     const graded = ActivityService.updateActivity(activity.id, { status: 'completada', grade: 4.5 })
     expect(graded?.grade).toBe(4.5)
     expect(graded?.status).toBe('completada')
-
-    const cleared = ActivityService.updateActivity(activity.id, { grade: '' as unknown as number })
-    expect(cleared?.grade).toBeNull()
 
     expect(ActivityService.updateActivity('no-existe', { grade: 5 })).toBeNull()
   })

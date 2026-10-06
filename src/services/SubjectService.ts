@@ -6,10 +6,7 @@ import type { UpdateSubjectDTO } from '@/dtos/UpdateSubjectDTO'
 
 export class SubjectService {
   static getSubjects(): SubjectInterface[] {
-    return useSubjectStore().subjects.map(subject => ({
-      ...subject,
-      credits: Number(subject.credits)
-    }))
+    return useSubjectStore().subjects
   }
 
   static getSubjectsByUser(userId: string): SubjectInterface[] {
@@ -20,17 +17,14 @@ export class SubjectService {
     return this.getSubjects().find(subject => subject.id === id) || null
   }
 
-  static createSubject({ name, professor, credits, userId }: CreateSubjectDTO): SubjectInterface {
-    const subject: SubjectInterface = {
+  static createSubject(subject: CreateSubjectDTO): SubjectInterface {
+    const createdSubject: SubjectInterface = {
       id: crypto.randomUUID(),
-      name,
-      professor,
-      credits: Number(credits),
-      userId
+      ...subject
     }
 
-    useSubjectStore().subjects.push(subject)
-    return subject
+    useSubjectStore().subjects.push(createdSubject)
+    return createdSubject
   }
 
   static updateSubject(id: string, changes: UpdateSubjectDTO): SubjectInterface | null {
@@ -40,8 +34,7 @@ export class SubjectService {
 
     const updatedSubject: SubjectInterface = {
       ...store.subjects[index],
-      ...changes,
-      credits: changes.credits === undefined ? store.subjects[index].credits : Number(changes.credits)
+      ...changes
     }
 
     store.subjects[index] = updatedSubject

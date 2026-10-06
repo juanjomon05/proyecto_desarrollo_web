@@ -52,14 +52,13 @@ const subjectOptions = computed(() => [
 
 const filteredActivities = computed(() => {
   return activities.value.filter(a => {
-    const matchesSubject = !selectedSubjectId.value || ActivityService.getActivitySubjectId(a.id) === selectedSubjectId.value
+    const matchesSubject = !selectedSubjectId.value || a.subjectId === selectedSubjectId.value
     const matchesStatus = !selectedStatus.value || a.status === selectedStatus.value
     return matchesSubject && matchesStatus
   })
 })
 
-function subjectNameByActivity(activityId: string): string {
-  const subjectId = ActivityService.getActivitySubjectId(activityId)
+function subjectName(subjectId: string): string {
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 
@@ -104,7 +103,7 @@ function handleSaved(): void {
     <div class="card">
       <DataTable :columns="columns" :rows="filteredActivities" row-key="id" empty-text="No hay actividades para este filtro.">
         <template #cell-subjectName="{ row }">
-          {{ subjectNameByActivity(row.id) }}
+          {{ subjectName(row.subjectId) }}
         </template>
         <template #cell-status="{ row }">
           <StatusBadge :status="row.status" />

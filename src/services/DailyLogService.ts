@@ -6,24 +6,21 @@ import type { UpdateDailyLogDTO } from '@/dtos/UpdateDailyLogDTO'
 
 export class DailyLogService {
   static getDailyLogs(): DailyLogInterface[] {
-    return useDailyLogStore().dailyLogs.map(log => this.normalizeLog(log))
+    return useDailyLogStore().dailyLogs
   }
 
   static getDailyLogsByUser(userId: string): DailyLogInterface[] {
     return this.getDailyLogs().filter(log => log.userId === userId)
   }
 
-  static createDailyLog({ userId, date, studyHours, sleepHours }: CreateDailyLogDTO): DailyLogInterface {
-    const log: DailyLogInterface = {
+  static createDailyLog(log: CreateDailyLogDTO): DailyLogInterface {
+    const createdLog: DailyLogInterface = {
       id: crypto.randomUUID(),
-      userId,
-      date,
-      studyHours: Number(studyHours),
-      sleepHours: Number(sleepHours)
+      ...log
     }
 
-    useDailyLogStore().dailyLogs.push(log)
-    return log
+    useDailyLogStore().dailyLogs.push(createdLog)
+    return createdLog
   }
 
   static updateDailyLog(id: string, changes: UpdateDailyLogDTO): DailyLogInterface | null {
@@ -31,10 +28,10 @@ export class DailyLogService {
     const index = store.dailyLogs.findIndex(log => log.id === id)
     if (index === -1) return null
 
-    const updatedLog = this.normalizeLog({
+    const updatedLog: DailyLogInterface = {
       ...store.dailyLogs[index],
       ...changes
-    })
+    }
 
     store.dailyLogs[index] = updatedLog
     return updatedLog
@@ -43,14 +40,5 @@ export class DailyLogService {
   static deleteDailyLog(id: string): void {
     const store = useDailyLogStore()
     store.dailyLogs = store.dailyLogs.filter(log => log.id !== id)
-  }
-
-  // private helpers
-  private static normalizeLog(log: DailyLogInterface): DailyLogInterface {
-    return {
-      ...log,
-      studyHours: Number(log.studyHours),
-      sleepHours: Number(log.sleepHours)
-    }
   }
 }

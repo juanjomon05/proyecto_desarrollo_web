@@ -43,7 +43,7 @@ onMounted(() => {
   if (props.activityId) {
     const activity = ActivityService.getActivityById(props.activityId)
     if (activity) {
-      subjectId.value = ActivityService.getActivitySubjectId(activity.id)
+      subjectId.value = activity.subjectId
       title.value = activity.title
       type.value = activity.type
       dueDate.value = activity.dueDate

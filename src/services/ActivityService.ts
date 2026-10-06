@@ -7,7 +7,7 @@ import type { UpdateActivityDTO } from '@/dtos/UpdateActivityDTO'
 
 export class ActivityService {
   static getActivities(): ActivityInterface[] {
-    return useActivityStore().activities.map(activity => this.normalizeActivity(activity))
+    return useActivityStore().activities
   }
 
   static getActivitiesForUser(userId: string): ActivityInterface[] {
@@ -23,24 +23,16 @@ export class ActivityService {
     return this.getActivities().find(activity => activity.id === id) || null
   }
 
-  static getActivitySubjectId(id: string): string {
-    return this.getActivityById(id)?.subjectId || ''
-  }
-
-  static createActivity({ subjectId, title, type, dueDate, weight }: CreateActivityDTO): ActivityInterface {
-    const activity: ActivityInterface = {
+  static createActivity(activity: CreateActivityDTO): ActivityInterface {
+    const createdActivity: ActivityInterface = {
       id: crypto.randomUUID(),
-      subjectId,
-      title,
-      type,
-      dueDate,
+      ...activity,
       status: 'pendiente',
-      grade: null,
-      weight: this.normalizeOptionalNumber(weight)
+      grade: null
     }
 
-    useActivityStore().activities.push(activity)
-    return activity
+    useActivityStore().activities.push(createdActivity)
+    return createdActivity
   }
 
   static updateActivity(id: string, changes: UpdateActivityDTO): ActivityInterface | null {
@@ -48,10 +40,10 @@ export class ActivityService {
     const index = store.activities.findIndex(activity => activity.id === id)
     if (index === -1) return null
 
-    const updatedActivity = this.normalizeActivity({
+    const updatedActivity: ActivityInterface = {
       ...store.activities[index],
       ...changes
-    })
+    }
 
     store.activities[index] = updatedActivity
     return updatedActivity
@@ -60,19 +52,5 @@ export class ActivityService {
   static deleteActivity(id: string): void {
     const store = useActivityStore()
     store.activities = store.activities.filter(activity => activity.id !== id)
-  }
-
-  // private helpers
-  private static normalizeOptionalNumber(value: unknown): number | null {
-    return value === '' || value === null || value === undefined ? null : Number(value)
-  }
-
-  private static normalizeActivity(activity: ActivityInterface): ActivityInterface {
-    return {
-      ...activity,
-      status: activity.status || 'pendiente',
-      grade: this.normalizeOptionalNumber(activity.grade),
-      weight: this.normalizeOptionalNumber(activity.weight)
-    }
   }
 }

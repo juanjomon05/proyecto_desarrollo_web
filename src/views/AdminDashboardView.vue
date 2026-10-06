@@ -43,11 +43,10 @@ const subjectOptions = computed(() => [
 
 const filteredActivities = computed(() => {
   if (!selectedSubjectId.value) return activities.value
-  return activities.value.filter(a => ActivityService.getActivitySubjectId(a.id) === selectedSubjectId.value)
+  return activities.value.filter(a => a.subjectId === selectedSubjectId.value)
 })
 
-function subjectNameByActivity(activityId: string): string {
-  const subjectId = ActivityService.getActivitySubjectId(activityId)
+function subjectName(subjectId: string): string {
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 
@@ -94,7 +93,7 @@ function renderCharts(): void {
     <div class="card">
       <DataTable :columns="columns" :rows="filteredActivities" row-key="id" empty-text="No hay actividades para este filtro.">
         <template #cell-subjectName="{ row }">
-          {{ subjectNameByActivity(row.id) }}
+          {{ subjectName(row.subjectId) }}
         </template>
         <template #cell-status="{ row }">
           <StatusBadge :status="row.status" />
