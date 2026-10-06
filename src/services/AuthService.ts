@@ -32,7 +32,7 @@ export class AuthService {
   static registerUser({ name, email, password }: RegisterUserDTO): UserInterface | null {
     if (UserService.getUserByEmail(email)) return null
 
-    const user = UserService.createUser({ name, email, passwordHash: password, role: 'student' })
+    const user = UserService.createUser({ name, email, password, role: 'student' })
 
     useAuthStore().currentUser = user
     return user

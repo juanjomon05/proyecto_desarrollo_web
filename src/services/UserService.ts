@@ -9,7 +9,7 @@ export class UserService {
   }
 
   static getUserByCredentials(email: string, password: string): UserInterface | null {
-    return this.getUsers().find(user => user.email === email && user.passwordHash === password) || null
+    return this.getUsers().find(user => user.email === email && user.password === password) || null
   }
 
   static getUserByEmail(email: string): UserInterface | null {

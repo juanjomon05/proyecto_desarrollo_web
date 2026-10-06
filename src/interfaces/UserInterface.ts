@@ -4,6 +4,6 @@ export interface UserInterface {
   id: string
   name: string
   email: string
-  passwordHash: string
+  password: string
   role: UserRole
 }
