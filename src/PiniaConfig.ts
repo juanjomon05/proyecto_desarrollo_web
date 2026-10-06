@@ -19,7 +19,9 @@ export default class PiniaConfig {
     } else {
       pinia.state.value = {
         user: {
-          users: userSeeder,
+          users: userSeeder
+        },
+        auth: {
           currentUser: null
         },
         subject: {

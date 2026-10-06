@@ -1,14 +1,12 @@
 // internal imports
-import { useUserStore } from '@/stores/UserStore'
+import { useAuthStore } from '@/stores/AuthStore'
+import { UserService } from '@/services/UserService'
 import type { UserInterface } from '@/interfaces/UserInterface'
 import type { RegisterUserDTO } from '@/dtos/RegisterUserDTO'
-import { UserService } from '@/services/UserService'
 
 export class AuthService {
-  // Unica forma en que el resto de la app (vistas, componentes, router) puede saber
-  // quien esta logueado, sin importar el store directamente.
   static getCurrentUser(): UserInterface | null {
-    return useUserStore().currentUser
+    return useAuthStore().currentUser
   }
 
   static isLoggedIn(): boolean {
@@ -23,28 +21,20 @@ export class AuthService {
     const user = UserService.getUserByCredentials(email, password)
     if (!user) return false
 
-    useUserStore().currentUser = user
+    useAuthStore().currentUser = user
     return true
   }
 
   static logout(): void {
-    useUserStore().currentUser = null
+    useAuthStore().currentUser = null
   }
 
   static registerUser({ name, email, password }: RegisterUserDTO): UserInterface | null {
-    const store = useUserStore()
     if (UserService.getUserByEmail(email)) return null
 
-    const user: UserInterface = {
-      id: crypto.randomUUID(),
-      name,
-      email,
-      passwordHash: password,
-      role: 'student'
-    }
+    const user = UserService.createUser({ name, email, passwordHash: password, role: 'student' })
 
-    store.users.push(user)
-    store.currentUser = user
+    useAuthStore().currentUser = user
     return user
   }
 }

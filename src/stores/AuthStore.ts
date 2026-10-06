@@ -5,8 +5,8 @@ import { ref } from 'vue'
 // internal imports
 import type { UserInterface } from '@/interfaces/UserInterface'
 
-export const useUserStore = defineStore('user', () => {
-  const users = ref<UserInterface[]>([])
+export const useAuthStore = defineStore('auth', () => {
+  const currentUser = ref<UserInterface | null>(null)
 
-  return { users }
+  return { currentUser }
 })
