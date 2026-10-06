@@ -4,7 +4,7 @@ import { computed, ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 
 // internal imports
-import { AuthService } from '@/services/authService'
+import { AuthService } from '@/services/AuthService'
 import AppLogo from '@/components/AppLogo.vue'
 
 const router = useRouter()

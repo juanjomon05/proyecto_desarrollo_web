@@ -1,5 +1,5 @@
 // internal imports
-import { useUserStore } from '@/stores/userStore'
+import { useUserStore } from '@/stores/UserStore'
 import type { UserInterface } from '@/interfaces/UserInterface'
 
 export class UserService {

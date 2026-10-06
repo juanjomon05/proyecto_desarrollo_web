@@ -1,5 +1,5 @@
 // internal imports
-import { useSubjectStore } from '@/stores/subjectStore'
+import { useSubjectStore } from '@/stores/SubjectStore'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 import type { CreateSubjectDTO } from '@/dtos/CreateSubjectDTO'
 import type { UpdateSubjectDTO } from '@/dtos/UpdateSubjectDTO'

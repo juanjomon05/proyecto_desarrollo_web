@@ -1,5 +1,5 @@
 // internal imports
-import { useDailyLogStore } from '@/stores/dailyLogStore'
+import { useDailyLogStore } from '@/stores/DailyLogStore'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 import type { CreateDailyLogDTO } from '@/dtos/CreateDailyLogDTO'
 import type { UpdateDailyLogDTO } from '@/dtos/UpdateDailyLogDTO'

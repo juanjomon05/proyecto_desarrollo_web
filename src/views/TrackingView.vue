@@ -4,9 +4,9 @@ import { ref, onMounted } from 'vue'
 import Chart from 'chart.js/auto'
 
 // internal imports
-import { DailyLogService } from '@/services/dailyLogService'
+import { DailyLogService } from '@/services/DailyLogService'
 import { PerformanceService } from '@/services/performanceService'
-import { AuthService } from '@/services/authService'
+import { AuthService } from '@/services/AuthService'
 import ChartCard from '@/components/ChartCard.vue'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 

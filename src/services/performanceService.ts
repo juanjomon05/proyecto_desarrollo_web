@@ -1,6 +1,6 @@
 // internal imports
-import { ActivityService } from '@/services/activityService'
-import { DailyLogService } from '@/services/dailyLogService'
+import { ActivityService } from '@/services/ActivityService'
+import { DailyLogService } from '@/services/DailyLogService'
 import { getTodayLocalDate } from '@/utils/format'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 import type { PerformanceDataInterface } from '@/interfaces/PerformanceDataInterface'

@@ -3,9 +3,9 @@
 import { ref, onMounted, computed } from 'vue'
 
 // internal imports
-import { ActivityService } from '@/services/activityService'
-import { SubjectService } from '@/services/subjectService'
-import { AuthService } from '@/services/authService'
+import { ActivityService } from '@/services/ActivityService'
+import { SubjectService } from '@/services/SubjectService'
+import { AuthService } from '@/services/AuthService'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 import type { ActivityInterface, ActivityStatus, ActivityType } from '@/interfaces/ActivityInterface'
 

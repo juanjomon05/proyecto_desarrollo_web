@@ -3,8 +3,8 @@
 import { ref } from 'vue'
 
 // internal imports
-import { SubjectService } from '@/services/subjectService'
-import { AuthService } from '@/services/authService'
+import { SubjectService } from '@/services/SubjectService'
+import { AuthService } from '@/services/AuthService'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
 const emit = defineEmits<{

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { ActivityService } from '@/services/activityService'
-import { SubjectService } from '@/services/subjectService'
+import { ActivityService } from '@/services/ActivityService'
+import { SubjectService } from '@/services/SubjectService'
 import { calculateGradeProjection, PASSING_GRADE } from '@/utils/gradeProjection'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'

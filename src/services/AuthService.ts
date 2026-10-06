@@ -1,8 +1,8 @@
 // internal imports
-import { useUserStore } from '@/stores/userStore'
+import { useUserStore } from '@/stores/UserStore'
 import type { UserInterface } from '@/interfaces/UserInterface'
 import type { RegisterUserDTO } from '@/dtos/RegisterUserDTO'
-import { UserService } from '@/services/userService'
+import { UserService } from '@/services/UserService'
 
 export class AuthService {
   // Unica forma en que el resto de la app (vistas, componentes, router) puede saber

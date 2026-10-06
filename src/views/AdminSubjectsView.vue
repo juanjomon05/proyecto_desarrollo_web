@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { SubjectService } from '@/services/subjectService'
+import { SubjectService } from '@/services/SubjectService'
 import DataTable from '@/components/DataTable.vue'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 

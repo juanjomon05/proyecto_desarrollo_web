@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { SubjectService } from '@/services/subjectService'
+import { SubjectService } from '@/services/SubjectService'
 
 const route = useRoute()
 const router = useRouter()

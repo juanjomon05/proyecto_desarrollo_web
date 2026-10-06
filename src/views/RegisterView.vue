@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { AuthService } from '@/services/authService'
+import { AuthService } from '@/services/AuthService'
 import AppLogo from '@/components/AppLogo.vue'
 
 const router = useRouter()

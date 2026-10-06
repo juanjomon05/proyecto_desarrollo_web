@@ -2,7 +2,7 @@
 import type { Router } from 'vue-router'
 
 // internal imports
-import { AuthService } from '@/services/authService'
+import { AuthService } from '@/services/AuthService'
 
 export function configureRouterGuards(router: Router): void {
   router.beforeEach((to) => {

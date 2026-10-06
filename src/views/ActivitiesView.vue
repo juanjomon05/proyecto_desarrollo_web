@@ -3,9 +3,9 @@
 import { ref, onMounted, computed } from 'vue'
 
 // internal imports
-import { ActivityService } from '@/services/activityService'
-import { SubjectService } from '@/services/subjectService'
-import { AuthService } from '@/services/authService'
+import { ActivityService } from '@/services/ActivityService'
+import { SubjectService } from '@/services/SubjectService'
+import { AuthService } from '@/services/AuthService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'

@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 
 // internal imports
-import { ActivityService } from '@/services/activityService'
-import { SubjectService } from '@/services/subjectService'
+import { ActivityService } from '@/services/ActivityService'
+import { SubjectService } from '@/services/SubjectService'
 
 beforeEach(() => {
   setActivePinia(createPinia())

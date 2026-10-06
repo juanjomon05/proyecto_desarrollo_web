@@ -3,8 +3,8 @@
 import { ref, onMounted } from 'vue'
 
 // internal imports
-import { SubjectService } from '@/services/subjectService'
-import { AuthService } from '@/services/authService'
+import { SubjectService } from '@/services/SubjectService'
+import { AuthService } from '@/services/AuthService'
 import Modal from '@/components/Modal.vue'
 import SubjectForm from '@/components/SubjectForm.vue'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'

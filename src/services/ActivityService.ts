@@ -1,6 +1,6 @@
 // internal imports
-import { useActivityStore } from '@/stores/activityStore'
-import { SubjectService } from '@/services/subjectService'
+import { useActivityStore } from '@/stores/ActivityStore'
+import { SubjectService } from '@/services/SubjectService'
 import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 import type { CreateActivityDTO } from '@/dtos/CreateActivityDTO'
 import type { UpdateActivityDTO } from '@/dtos/UpdateActivityDTO'
