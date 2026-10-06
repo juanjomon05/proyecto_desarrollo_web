@@ -35,7 +35,7 @@ const weight = ref<number | string | null>(null)
 const errorMessage = ref('')
 
 // lifecycle
-onMounted(() => {
+onMounted(async () => {
   const user = AuthService.getCurrentUser()
   if (user) {
     subjects.value = SubjectService.getSubjectsByUser(user.id)
@@ -46,7 +46,7 @@ onMounted(() => {
   }
 
   if (props.activityId) {
-    const activity = ActivityService.getActivityById(props.activityId)
+    const activity = await ActivityService.getActivityById(props.activityId)
     if (activity) {
       subjectId.value = activity.subjectId
       title.value = activity.title
@@ -60,7 +60,7 @@ onMounted(() => {
 })
 
 // handlers
-function handleSubmit(): void {
+async function handleSubmit(): Promise<void> {
   if (!subjectId.value || !title.value || !dueDate.value) {
     errorMessage.value = 'Completa materia, título y fecha de entrega.'
     return
@@ -78,7 +78,7 @@ function handleSubmit(): void {
   const weightValue = weight.value === null || weight.value === '' ? null : Number(weight.value)
 
   const saved = props.activityId
-    ? ActivityService.updateActivity(props.activityId, {
+    ? await ActivityService.updateActivity(props.activityId, {
         subjectId: subjectId.value,
         title: title.value,
         type: type.value,
@@ -87,7 +87,7 @@ function handleSubmit(): void {
         grade: grade.value === null || grade.value === '' ? null : Number(grade.value),
         weight: weightValue
       })
-    : ActivityService.createActivity({
+    : await ActivityService.createActivity({
         subjectId: subjectId.value,
         title: title.value,
         type: type.value,

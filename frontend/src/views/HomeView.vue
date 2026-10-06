@@ -24,11 +24,11 @@ const currentUser = computed(() => AuthService.getCurrentUser())
 const isLoggedIn = computed(() => AuthService.isLoggedIn())
 
 // lifecycle
-onMounted(() => {
+onMounted(async () => {
   const user = AuthService.getCurrentUser()
   if (user) {
     subjects.value = SubjectService.getSubjectsByUser(user.id)
-    activities.value = ActivityService.getActivitiesForUser(user.id)
+    activities.value = await ActivityService.getActivitiesForUser(user.id)
     logs.value = DailyLogService.getDailyLogsByUser(user.id)
   }
   renderCharts()
@@ -52,7 +52,7 @@ const avgSleepHours = computed(() => {
 // % ya calificado vs % pendiente por materia, para el grafico de progreso de notas.
 const subjectProgress = computed(() =>
   subjects.value.map(subject => {
-    const gradedWeight = GradeProjectionCalculator.calculate(ActivityService.getActivitiesBySubject(subject.id)).gradedWeight
+    const gradedWeight = GradeProjectionCalculator.calculate(activities.value.filter(a => a.subjectId === subject.id)).gradedWeight
     return { name: subject.name, graded: gradedWeight, remaining: Math.max(0, 100 - gradedWeight) }
   })
 )

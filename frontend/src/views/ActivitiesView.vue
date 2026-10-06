@@ -39,10 +39,10 @@ const statusFilters: { value: ActivityStatus | ''; label: string }[] = [
 ]
 
 // functions
-function loadData(): void {
+async function loadData(): Promise<void> {
   const user = AuthService.getCurrentUser()
   if (!user) return
-  activities.value = ActivityService.getActivitiesForUser(user.id)
+  activities.value = await ActivityService.getActivitiesForUser(user.id)
   subjects.value = SubjectService.getSubjectsByUser(user.id)
 }
 
@@ -69,14 +69,14 @@ function subjectName(subjectId: number): string {
 }
 
 // handlers
-function markAsDone(id: number): void {
-  ActivityService.updateActivity(id, { status: 'completada' })
-  loadData()
+async function markAsDone(id: number): Promise<void> {
+  await ActivityService.updateActivity(id, { status: 'completada' })
+  await loadData()
 }
 
-function handleSaved(): void {
+async function handleSaved(): Promise<void> {
   isModalOpen.value = false
-  loadData()
+  await loadData()
 }
 </script>
 

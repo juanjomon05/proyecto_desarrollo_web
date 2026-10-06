@@ -3,7 +3,6 @@ import { createPinia } from 'pinia'
 import { watch } from 'vue'
 
 // internal imports
-import { activitySeeder } from '@/seeders/ActivitySeeder'
 import { dailyLogSeeder } from '@/seeders/DailyLogSeeder'
 import { subjectSeeder } from '@/seeders/SubjectSeeder'
 
@@ -26,9 +25,6 @@ export default class PiniaConfig {
         },
         subject: {
           subjects: subjectSeeder
-        },
-        activity: {
-          activities: activitySeeder
         },
         dailyLog: {
           dailyLogs: dailyLogSeeder

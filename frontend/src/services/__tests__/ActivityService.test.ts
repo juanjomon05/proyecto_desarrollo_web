@@ -1,80 +1,83 @@
 // external imports
-import { beforeEach, describe, expect, it } from 'vitest'
-import { createPinia, setActivePinia } from 'pinia'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import axios from 'axios'
 
 // internal imports
 import { ActivityService } from '@/services/ActivityService'
-import { SubjectService } from '@/services/SubjectService'
+import type { ActivityInterface } from '@/interfaces/ActivityInterface'
+
+vi.mock('axios')
+
+const activity: ActivityInterface = {
+  id: 1,
+  subjectId: 1,
+  title: 'Quiz 1',
+  type: 'quiz',
+  dueDate: '2026-10-01',
+  status: 'pendiente',
+  grade: null,
+  weight: 30
+}
 
 beforeEach(() => {
-  setActivePinia(createPinia())
+  vi.resetAllMocks()
 })
 
 describe('ActivityService', () => {
-  it('crea una actividad pendiente y sin nota por defecto', () => {
-    const subject = SubjectService.createSubject({ name: 'Materia', professor: 'Prof', credits: 3, userId: 1 })
+  it('getActivities consulta /api/activities', async () => {
+    vi.mocked(axios.get).mockResolvedValue({ data: [activity] })
 
-    const activity = ActivityService.createActivity({
-      subjectId: subject.id,
-      title: 'Quiz 1',
-      type: 'quiz',
-      dueDate: '2026-10-01',
-      weight: 30
-    })
-
-    expect(activity.id).toBeTruthy()
-    expect(activity.status).toBe('pendiente')
-    expect(activity.grade).toBeNull()
-    expect(activity.weight).toBe(30)
+    expect(await ActivityService.getActivities()).toEqual([activity])
+    expect(axios.get).toHaveBeenCalledWith(expect.stringMatching(/\/api\/activities$/))
   })
 
-  it('lista todas las actividades creadas', () => {
-    const subject = SubjectService.createSubject({ name: 'Materia', professor: 'Prof', credits: 3, userId: 1 })
-    ActivityService.createActivity({ subjectId: subject.id, title: 'A1', type: 'tarea', dueDate: '2026-10-01', weight: null })
-    ActivityService.createActivity({ subjectId: subject.id, title: 'A2', type: 'tarea', dueDate: '2026-10-02', weight: null })
+  it('getActivitiesForUser consulta las actividades del usuario', async () => {
+    vi.mocked(axios.get).mockResolvedValue({ data: [activity] })
 
-    expect(ActivityService.getActivities()).toHaveLength(2)
+    await ActivityService.getActivitiesForUser(1)
+
+    expect(axios.get).toHaveBeenCalledWith(expect.stringMatching(/\/api\/activities\/user\/1$/))
   })
 
-  it('getActivitiesForUser solo trae actividades de materias que el usuario puede ver', () => {
-    const anaSubject = SubjectService.createSubject({ name: 'De Ana', professor: 'Prof', credits: 3, userId: 1 })
-    const otroSubject = SubjectService.createSubject({ name: 'De Otro', professor: 'Prof', credits: 3, userId: 2 })
-    ActivityService.createActivity({ subjectId: anaSubject.id, title: 'Actividad de Ana', type: 'tarea', dueDate: '2026-10-01', weight: null })
-    ActivityService.createActivity({ subjectId: otroSubject.id, title: 'Actividad de Otro', type: 'tarea', dueDate: '2026-10-01', weight: null })
+  it('getActivitiesBySubject consulta las actividades de la materia', async () => {
+    vi.mocked(axios.get).mockResolvedValue({ data: [activity] })
 
-    const anaActivities = ActivityService.getActivitiesForUser(1)
+    await ActivityService.getActivitiesBySubject(1)
 
-    expect(anaActivities).toHaveLength(1)
-    expect(anaActivities[0].title).toBe('Actividad de Ana')
+    expect(axios.get).toHaveBeenCalledWith(expect.stringMatching(/\/api\/activities\/subject\/1$/))
   })
 
-  it('getActivitiesBySubject filtra por materia', () => {
-    const subjectA = SubjectService.createSubject({ name: 'A', professor: 'Prof', credits: 3, userId: 1 })
-    const subjectB = SubjectService.createSubject({ name: 'B', professor: 'Prof', credits: 3, userId: 1 })
-    ActivityService.createActivity({ subjectId: subjectA.id, title: 'Solo de A', type: 'tarea', dueDate: '2026-10-01', weight: null })
-    ActivityService.createActivity({ subjectId: subjectB.id, title: 'Solo de B', type: 'tarea', dueDate: '2026-10-01', weight: null })
+  it('getActivityById devuelve null cuando el backend no encuentra la actividad', async () => {
+    vi.mocked(axios.get).mockResolvedValue({ data: '' })
 
-    expect(ActivityService.getActivitiesBySubject(subjectA.id)).toHaveLength(1)
+    expect(await ActivityService.getActivityById(999)).toBeNull()
   })
 
-  it('updateActivity actualiza nota y estado, y devuelve null si el id no existe', () => {
-    const subject = SubjectService.createSubject({ name: 'Materia', professor: 'Prof', credits: 3, userId: 1 })
-    const activity = ActivityService.createActivity({ subjectId: subject.id, title: 'Examen', type: 'examen', dueDate: '2026-10-01', weight: 100 })
+  it('createActivity envia la actividad al backend', async () => {
+    vi.mocked(axios.post).mockResolvedValue({ data: activity })
+    const newActivity = { subjectId: 1, title: 'Quiz 1', type: 'quiz' as const, dueDate: '2026-10-01', weight: 30 }
 
-    const graded = ActivityService.updateActivity(activity.id, { status: 'completada', grade: 4.5 })
+    expect(await ActivityService.createActivity(newActivity)).toEqual(activity)
+    expect(axios.post).toHaveBeenCalledWith(expect.stringMatching(/\/api\/activities$/), newActivity)
+  })
+
+  it('updateActivity envia los cambios y devuelve null si el id no existe', async () => {
+    vi.mocked(axios.patch).mockResolvedValue({ data: { ...activity, status: 'completada', grade: 4.5 } })
+
+    const graded = await ActivityService.updateActivity(1, { status: 'completada', grade: 4.5 })
+
     expect(graded?.grade).toBe(4.5)
-    expect(graded?.status).toBe('completada')
+    expect(axios.patch).toHaveBeenCalledWith(expect.stringMatching(/\/api\/activities\/1$/), { status: 'completada', grade: 4.5 })
 
-    expect(ActivityService.updateActivity(999, { grade: 5 })).toBeNull()
+    vi.mocked(axios.patch).mockResolvedValue({ data: '' })
+    expect(await ActivityService.updateActivity(999, { grade: 5 })).toBeNull()
   })
 
-  it('deleteActivity elimina la actividad', () => {
-    const subject = SubjectService.createSubject({ name: 'Materia', professor: 'Prof', credits: 3, userId: 1 })
-    const activity = ActivityService.createActivity({ subjectId: subject.id, title: 'Borrar', type: 'tarea', dueDate: '2026-10-01', weight: null })
+  it('deleteActivity llama a DELETE /api/activities/:id', async () => {
+    vi.mocked(axios.delete).mockResolvedValue({ data: '' })
 
-    ActivityService.deleteActivity(activity.id)
+    await ActivityService.deleteActivity(1)
 
-    expect(ActivityService.getActivityById(activity.id)).toBeNull()
-    expect(ActivityService.getActivities()).toHaveLength(0)
+    expect(axios.delete).toHaveBeenCalledWith(expect.stringMatching(/\/api\/activities\/1$/))
   })
 })

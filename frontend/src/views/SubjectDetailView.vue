@@ -29,10 +29,10 @@ const subject = ref<SubjectInterface | null>(null)
 const activities = ref<ActivityInterface[]>([])
 
 // lifecycle
-onMounted(() => {
+onMounted(async () => {
   const id = Number(route.params.id)
   subject.value = SubjectService.getSubjectById(id)
-  activities.value = ActivityService.getActivitiesBySubject(id)
+  activities.value = await ActivityService.getActivitiesBySubject(id)
 })
 
 // computed variables

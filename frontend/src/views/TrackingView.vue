@@ -9,10 +9,12 @@ import { ActivityService } from '@/services/ActivityService'
 import { AuthService } from '@/services/AuthService'
 import ChartCard from '@/components/ChartCard.vue'
 import { PerformanceCalculator } from '@/utils/PerformanceCalculator'
+import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 
 // reactive variables
 const logs = ref<DailyLogInterface[]>([])
+const activities = ref<ActivityInterface[]>([])
 const date = ref('')
 const studyHours = ref('')
 const sleepHours = ref('')
@@ -24,7 +26,9 @@ const chartCanvas = ref<HTMLCanvasElement | null>(null)
 let chartInstance: Chart | null = null
 
 // lifecycle
-onMounted(() => {
+onMounted(async () => {
+  const user = AuthService.getCurrentUser()
+  if (user) activities.value = await ActivityService.getActivitiesForUser(user.id)
   loadLogs()
   renderChart()
 })
@@ -63,14 +67,9 @@ function handleSubmit(): void {
 
 // functions
 function renderChart(): void {
-  const user = AuthService.getCurrentUser()
-  if (!user || !chartCanvas.value) return
+  if (!chartCanvas.value) return
 
-  const data = PerformanceCalculator.getPerformanceData(
-    DailyLogService.getDailyLogsByUser(user.id),
-    ActivityService.getActivitiesForUser(user.id),
-    daysWindow.value
-  )
+  const data = PerformanceCalculator.getPerformanceData(logs.value, activities.value, daysWindow.value)
 
   if (chartInstance) chartInstance.destroy()
 

@@ -35,9 +35,9 @@ const donutEl = ref<HTMLDivElement | null>(null)
 let donutChart: ApexCharts | null = null
 
 // lifecycle
-onMounted(() => {
+onMounted(async () => {
   subjects.value = SubjectService.getSubjects()
-  activities.value = ActivityService.getActivities()
+  activities.value = await ActivityService.getActivities()
   renderCharts()
 })
 
