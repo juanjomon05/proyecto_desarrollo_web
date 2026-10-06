@@ -2,9 +2,6 @@
 import { createPinia } from 'pinia'
 import { watch } from 'vue'
 
-// internal imports
-import { dailyLogSeeder } from '@/seeders/DailyLogSeeder'
-
 export default class PiniaConfig {
   // Se cambia el nombre cuando cambia la forma del estado guardado, para que el
   // navegador no cargue datos con el formato anterior y se usen los seeders.
@@ -21,9 +18,6 @@ export default class PiniaConfig {
       pinia.state.value = {
         auth: {
           currentUser: null
-        },
-        dailyLog: {
-          dailyLogs: dailyLogSeeder
         }
       }
 

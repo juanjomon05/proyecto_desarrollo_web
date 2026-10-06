@@ -29,19 +29,19 @@ let chartInstance: Chart | null = null
 onMounted(async () => {
   const user = AuthService.getCurrentUser()
   if (user) activities.value = await ActivityService.getActivitiesForUser(user.id)
-  loadLogs()
+  await loadLogs()
   renderChart()
 })
 
 // functions
-function loadLogs(): void {
+async function loadLogs(): Promise<void> {
   const user = AuthService.getCurrentUser()
   if (!user) return
-  logs.value = DailyLogService.getDailyLogsByUser(user.id)
+  logs.value = await DailyLogService.getDailyLogsByUser(user.id)
 }
 
 // handlers
-function handleSubmit(): void {
+async function handleSubmit(): Promise<void> {
   const user = AuthService.getCurrentUser()
   if (!user) return
 
@@ -51,7 +51,7 @@ function handleSubmit(): void {
   }
   errorMessage.value = ''
 
-  DailyLogService.createDailyLog({
+  await DailyLogService.createDailyLog({
     userId: user.id,
     date: date.value,
     studyHours: Number(studyHours.value),
@@ -61,7 +61,7 @@ function handleSubmit(): void {
   date.value = ''
   studyHours.value = ''
   sleepHours.value = ''
-  loadLogs()
+  await loadLogs()
   renderChart()
 }
 

@@ -29,7 +29,7 @@ onMounted(async () => {
   if (user) {
     subjects.value = await SubjectService.getSubjectsByUser(user.id)
     activities.value = await ActivityService.getActivitiesForUser(user.id)
-    logs.value = DailyLogService.getDailyLogsByUser(user.id)
+    logs.value = await DailyLogService.getDailyLogsByUser(user.id)
   }
   renderCharts()
 })

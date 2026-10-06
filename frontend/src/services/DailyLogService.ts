@@ -1,45 +1,35 @@
+// external imports
+import axios from 'axios'
+
 // internal imports
-import { useDailyLogStore } from '@/stores/DailyLogStore'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 import type { CreateDailyLogDTO } from '@/dtos/CreateDailyLogDTO'
 import type { UpdateDailyLogDTO } from '@/dtos/UpdateDailyLogDTO'
 
 export class DailyLogService {
-  static getDailyLogs(): DailyLogInterface[] {
-    return useDailyLogStore().dailyLogs
+  private static readonly API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/daily-logs`
+
+  static async getDailyLogs(): Promise<DailyLogInterface[]> {
+    const { data } = await axios.get<DailyLogInterface[]>(this.API_URL)
+    return data
   }
 
-  static getDailyLogsByUser(userId: number): DailyLogInterface[] {
-    return this.getDailyLogs().filter(log => log.userId === userId)
+  static async getDailyLogsByUser(userId: number): Promise<DailyLogInterface[]> {
+    const { data } = await axios.get<DailyLogInterface[]>(`${this.API_URL}/user/${userId}`)
+    return data
   }
 
-  static createDailyLog(log: CreateDailyLogDTO): DailyLogInterface {
-    const store = useDailyLogStore()
-    const createdLog: DailyLogInterface = {
-      id: Math.max(0, ...store.dailyLogs.map(item => item.id)) + 1,
-      ...log
-    }
-
-    store.dailyLogs.push(createdLog)
-    return createdLog
+  static async createDailyLog(log: CreateDailyLogDTO): Promise<DailyLogInterface> {
+    const { data } = await axios.post<DailyLogInterface>(this.API_URL, log)
+    return data
   }
 
-  static updateDailyLog(id: number, changes: UpdateDailyLogDTO): DailyLogInterface | null {
-    const store = useDailyLogStore()
-    const index = store.dailyLogs.findIndex(log => log.id === id)
-    if (index === -1) return null
-
-    const updatedLog: DailyLogInterface = {
-      ...store.dailyLogs[index],
-      ...changes
-    }
-
-    store.dailyLogs[index] = updatedLog
-    return updatedLog
+  static async updateDailyLog(id: number, changes: UpdateDailyLogDTO): Promise<DailyLogInterface | null> {
+    const { data } = await axios.patch<DailyLogInterface | null>(`${this.API_URL}/${id}`, changes)
+    return data || null
   }
 
-  static deleteDailyLog(id: number): void {
-    const store = useDailyLogStore()
-    store.dailyLogs = store.dailyLogs.filter(log => log.id !== id)
+  static async deleteDailyLog(id: number): Promise<void> {
+    await axios.delete(`${this.API_URL}/${id}`)
   }
 }
