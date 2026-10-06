@@ -1,65 +1,71 @@
 // external imports
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import axios, { AxiosError, type AxiosResponse } from 'axios'
 
 // internal imports
 import { AuthService } from '@/services/AuthService'
-import { UserService } from '@/services/UserService'
+import type { UserInterface } from '@/interfaces/UserInterface'
+
+vi.mock('axios', async importOriginal => {
+  const actual = await importOriginal<typeof import('axios')>()
+  return { ...actual, default: { ...actual.default, post: vi.fn() } }
+})
+
+const ana: UserInterface = { id: 1, name: 'Ana Pérez', email: 'ana@studeasy.com', password: '1234', role: 'student' }
+
+function httpError(status: number): AxiosError {
+  return new AxiosError('error', undefined, undefined, undefined, { status } as AxiosResponse)
+}
 
 beforeEach(() => {
   setActivePinia(createPinia())
+  vi.mocked(axios.post).mockReset()
 })
 
 describe('AuthService', () => {
-  it('registerUser crea una cuenta nueva como estudiante', () => {
-    const user = AuthService.registerUser({ name: 'Ana Pérez', email: 'ana@studeasy.com', password: '1234' })
+  it('login guarda la sesion cuando el backend acepta las credenciales', async () => {
+    vi.mocked(axios.post).mockResolvedValue({ data: ana })
 
-    expect(user).not.toBeNull()
-    expect(user?.role).toBe('student')
-    expect(UserService.getUsers()).toHaveLength(1)
-  })
-
-  it('registerUser rechaza un correo ya registrado', () => {
-    AuthService.registerUser({ name: 'Ana Pérez', email: 'ana@studeasy.com', password: '1234' })
-
-    const duplicate = AuthService.registerUser({ name: 'Otra Ana', email: 'ana@studeasy.com', password: 'abcd' })
-
-    expect(duplicate).toBeNull()
-    expect(UserService.getUsers()).toHaveLength(1)
-  })
-
-  it('login deja la sesion activa y logout la limpia', () => {
-    AuthService.registerUser({ name: 'Ana Pérez', email: 'ana@studeasy.com', password: '1234' })
-    AuthService.logout()
-
-    expect(AuthService.isLoggedIn()).toBe(false)
-
-    const success = AuthService.login('ana@studeasy.com', '1234')
+    const success = await AuthService.login({ email: 'ana@studeasy.com', password: '1234' })
 
     expect(success).toBe(true)
-    expect(AuthService.isLoggedIn()).toBe(true)
+    expect(axios.post).toHaveBeenCalledWith(expect.stringMatching(/\/api\/auth\/login$/), { email: 'ana@studeasy.com', password: '1234' })
     expect(AuthService.getCurrentUser()?.email).toBe('ana@studeasy.com')
+    expect(AuthService.isLoggedIn()).toBe(true)
+    expect(AuthService.isAdmin()).toBe(false)
+  })
+
+  it('login devuelve false cuando el backend responde 401', async () => {
+    vi.mocked(axios.post).mockRejectedValue(httpError(401))
+
+    expect(await AuthService.login({ email: 'ana@studeasy.com', password: 'mala' })).toBe(false)
+    expect(AuthService.isLoggedIn()).toBe(false)
+  })
+
+  it('logout limpia la sesion', async () => {
+    vi.mocked(axios.post).mockResolvedValue({ data: ana })
+    await AuthService.login({ email: 'ana@studeasy.com', password: '1234' })
 
     AuthService.logout()
 
-    expect(AuthService.isLoggedIn()).toBe(false)
     expect(AuthService.getCurrentUser()).toBeNull()
   })
 
-  it('login devuelve false con credenciales incorrectas', () => {
-    // registerUser deja la sesion iniciada (igual que en la app real), asi que
-    // cerramos sesion primero para probar el login fallido desde cero.
-    AuthService.registerUser({ name: 'Ana Pérez', email: 'ana@studeasy.com', password: '1234' })
-    AuthService.logout()
+  it('registerUser deja la sesion iniciada con el usuario creado', async () => {
+    vi.mocked(axios.post).mockResolvedValue({ data: ana })
 
-    expect(AuthService.login('ana@studeasy.com', 'mala')).toBe(false)
-    expect(AuthService.isLoggedIn()).toBe(false)
+    const user = await AuthService.registerUser({ name: 'Ana Pérez', email: 'ana@studeasy.com', password: '1234' })
+
+    expect(user?.id).toBe(1)
+    expect(axios.post).toHaveBeenCalledWith(expect.stringMatching(/\/api\/auth\/register$/), { name: 'Ana Pérez', email: 'ana@studeasy.com', password: '1234' })
+    expect(AuthService.isLoggedIn()).toBe(true)
   })
 
-  it('isAdmin es true solo para el rol admin', () => {
-    AuthService.registerUser({ name: 'Ana Pérez', email: 'ana@studeasy.com', password: '1234' })
-    AuthService.login('ana@studeasy.com', '1234')
+  it('registerUser devuelve null cuando el correo ya existe (409)', async () => {
+    vi.mocked(axios.post).mockRejectedValue(httpError(409))
 
-    expect(AuthService.isAdmin()).toBe(false)
+    expect(await AuthService.registerUser({ name: 'Otra', email: 'ana@studeasy.com', password: 'x' })).toBeNull()
+    expect(AuthService.isLoggedIn()).toBe(false)
   })
 })

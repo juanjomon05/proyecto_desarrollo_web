@@ -6,7 +6,6 @@ import { watch } from 'vue'
 import { activitySeeder } from '@/seeders/ActivitySeeder'
 import { dailyLogSeeder } from '@/seeders/DailyLogSeeder'
 import { subjectSeeder } from '@/seeders/SubjectSeeder'
-import { userSeeder } from '@/seeders/UserSeeder'
 
 export default class PiniaConfig {
   // Se cambia el nombre cuando cambia la forma del estado guardado, para que el
@@ -22,9 +21,6 @@ export default class PiniaConfig {
       pinia.state.value = JSON.parse(savedState)
     } else {
       pinia.state.value = {
-        user: {
-          users: userSeeder
-        },
         auth: {
           currentUser: null
         },

@@ -16,13 +16,13 @@ const password = ref('')
 const errorMessage = ref('')
 
 // handlers
-function handleSubmit(): void {
+async function handleSubmit(): Promise<void> {
   if (!email.value || !password.value) {
     errorMessage.value = 'Completa correo y contraseña.'
     return
   }
 
-  const success = AuthService.login(email.value, password.value)
+  const success = await AuthService.login({ email: email.value, password: password.value })
   if (!success) {
     errorMessage.value = 'Correo o contraseña incorrectos.'
     return

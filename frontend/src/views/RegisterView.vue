@@ -18,7 +18,7 @@ const confirmPassword = ref('')
 const errorMessage = ref('')
 
 // handlers
-function handleSubmit(): void {
+async function handleSubmit(): Promise<void> {
   if (!name.value || !email.value || !password.value) {
     errorMessage.value = 'Completa nombre, correo y contraseña.'
     return
@@ -28,7 +28,7 @@ function handleSubmit(): void {
     return
   }
 
-  const success = AuthService.registerUser({ name: name.value, email: email.value, password: password.value })
+  const success = await AuthService.registerUser({ name: name.value, email: email.value, password: password.value })
   if (!success) {
     errorMessage.value = 'Ese correo ya está registrado.'
     return

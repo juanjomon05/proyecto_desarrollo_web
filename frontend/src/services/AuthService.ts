@@ -1,10 +1,15 @@
+// external imports
+import axios from 'axios'
+
 // internal imports
 import { useAuthStore } from '@/stores/AuthStore'
-import { UserService } from '@/services/UserService'
 import type { UserInterface } from '@/interfaces/UserInterface'
+import type { LoginDTO } from '@/dtos/LoginDTO'
 import type { RegisterUserDTO } from '@/dtos/RegisterUserDTO'
 
 export class AuthService {
+  private static readonly API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/auth`
+
   static getCurrentUser(): UserInterface | null {
     return useAuthStore().currentUser
   }
@@ -17,24 +22,29 @@ export class AuthService {
     return this.getCurrentUser()?.role === 'admin'
   }
 
-  static login(email: string, password: string): boolean {
-    const user = UserService.getUserByCredentials(email, password)
-    if (!user) return false
-
-    useAuthStore().currentUser = user
-    return true
+  static async login(credentials: LoginDTO): Promise<boolean> {
+    try {
+      const { data } = await axios.post<UserInterface>(`${this.API_URL}/login`, credentials)
+      useAuthStore().currentUser = data
+      return true
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) return false
+      throw error
+    }
   }
 
   static logout(): void {
     useAuthStore().currentUser = null
   }
 
-  static registerUser({ name, email, password }: RegisterUserDTO): UserInterface | null {
-    if (UserService.getUserByEmail(email)) return null
-
-    const user = UserService.createUser({ name, email, password, role: 'student' })
-
-    useAuthStore().currentUser = user
-    return user
+  static async registerUser(user: RegisterUserDTO): Promise<UserInterface | null> {
+    try {
+      const { data } = await axios.post<UserInterface>(`${this.API_URL}/register`, user)
+      useAuthStore().currentUser = data
+      return data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 409) return null
+      throw error
+    }
   }
 }
