@@ -8,7 +8,7 @@ import { ActivityService } from '@/services/ActivityService'
 import { DailyLogService } from '@/services/DailyLogService'
 import { SubjectService } from '@/services/SubjectService'
 import { AuthService } from '@/services/AuthService'
-import { calculateGradeProjection } from '@/utils/gradeProjection'
+import { GradeProjectionCalculator } from '@/utils/GradeProjectionCalculator'
 import StatCard from '@/components/StatCard.vue'
 import ChartCard from '@/components/ChartCard.vue'
 import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInterface'
@@ -48,7 +48,7 @@ const avgSleepHours = computed(() => {
 // % ya calificado vs % pendiente por materia, para el grafico de progreso de notas.
 const subjectProgress = computed(() =>
   subjects.value.map(subject => {
-    const gradedWeight = calculateGradeProjection(ActivityService.getActivitiesBySubject(subject.id)).gradedWeight
+    const gradedWeight = GradeProjectionCalculator.calculate(ActivityService.getActivitiesBySubject(subject.id)).gradedWeight
     return { name: subject.name, graded: gradedWeight, remaining: Math.max(0, 100 - gradedWeight) }
   })
 )

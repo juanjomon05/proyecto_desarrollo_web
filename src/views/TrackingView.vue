@@ -5,9 +5,10 @@ import Chart from 'chart.js/auto'
 
 // internal imports
 import { DailyLogService } from '@/services/DailyLogService'
-import { PerformanceService } from '@/services/performanceService'
+import { ActivityService } from '@/services/ActivityService'
 import { AuthService } from '@/services/AuthService'
 import ChartCard from '@/components/ChartCard.vue'
+import { PerformanceCalculator } from '@/utils/PerformanceCalculator'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 
 const logs = ref<DailyLogInterface[]>([])
@@ -59,7 +60,11 @@ function renderChart(): void {
   const user = AuthService.getCurrentUser()
   if (!user || !chartCanvas.value) return
 
-  const data = PerformanceService.getPerformanceData(user.id, daysWindow.value)
+  const data = PerformanceCalculator.getPerformanceData(
+    DailyLogService.getDailyLogsByUser(user.id),
+    ActivityService.getActivitiesForUser(user.id),
+    daysWindow.value
+  )
 
   if (chartInstance) chartInstance.destroy()
 

@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { ActivityService } from '@/services/ActivityService'
 import { SubjectService } from '@/services/SubjectService'
-import { calculateGradeProjection, PASSING_GRADE } from '@/utils/gradeProjection'
+import { GradeProjectionCalculator } from '@/utils/GradeProjectionCalculator'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import type { ActivityInterface } from '@/interfaces/ActivityInterface'
@@ -28,7 +28,9 @@ onMounted(() => {
   activities.value = ActivityService.getActivitiesBySubject(id)
 })
 
-const projection = computed(() => calculateGradeProjection(activities.value))
+const passingGrade = GradeProjectionCalculator.PASSING_GRADE
+
+const projection = computed(() => GradeProjectionCalculator.calculate(activities.value))
 </script>
 
 <template>
@@ -59,10 +61,10 @@ const projection = computed(() => calculateGradeProjection(activities.value))
       </div>
 
       <p v-if="projection.status === 'won'" class="projection-message projection-message--success">
-        Ya aseguraste el {{ PASSING_GRADE.toFixed(1) }} en esta materia, sin importar lo que falte.
+        Ya aseguraste el {{ passingGrade.toFixed(1) }} en esta materia, sin importar lo que falte.
       </p>
       <p v-else-if="projection.status === 'lost'" class="projection-message projection-message--danger">
-        Con lo que falta por evaluar ya no es posible llegar a {{ PASSING_GRADE.toFixed(1) }}.
+        Con lo que falta por evaluar ya no es posible llegar a {{ passingGrade.toFixed(1) }}.
       </p>
       <p v-else class="projection-message">
         Necesitas un promedio de <strong>{{ projection.neededAverage?.toFixed(2) }}</strong> en el

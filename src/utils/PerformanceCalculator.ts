@@ -1,20 +1,18 @@
 // internal imports
-import { ActivityService } from '@/services/ActivityService'
-import { DailyLogService } from '@/services/DailyLogService'
-import { getTodayLocalDate } from '@/utils/format'
+import { DateUtils } from '@/utils/DateUtils'
+import type { ActivityInterface } from '@/interfaces/ActivityInterface'
+import type { AveragesInterface } from '@/interfaces/AveragesInterface'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 import type { PerformanceDataInterface } from '@/interfaces/PerformanceDataInterface'
 
-interface Averages {
-  avgStudyHours: number | null
-  avgSleepHours: number | null
-}
-
-export class PerformanceService {
-  static getPerformanceData(userId: string, daysWindow = 3): PerformanceDataInterface[] {
-    const logs = DailyLogService.getDailyLogsByUser(userId)
-    const gradedActivities = ActivityService.getActivitiesForUser(userId).filter(activity => activity.grade !== null)
-    const today = getTodayLocalDate()
+export class PerformanceCalculator {
+  static getPerformanceData(
+    logs: DailyLogInterface[],
+    activities: ActivityInterface[],
+    daysWindow = 3
+  ): PerformanceDataInterface[] {
+    const gradedActivities = activities.filter(activity => activity.grade !== null)
+    const today = DateUtils.getTodayLocalDate()
     const { avgStudyHours, avgSleepHours } = this.calculateAverages(logs, today, daysWindow)
 
     return gradedActivities.map(activity => ({
@@ -28,7 +26,7 @@ export class PerformanceService {
   }
 
   // private helpers
-  private static calculateAverages(logs: DailyLogInterface[], endDate: string, days: number): Averages {
+  private static calculateAverages(logs: DailyLogInterface[], endDate: string, days: number): AveragesInterface {
     const end = new Date(endDate)
     const start = new Date(end)
     start.setDate(start.getDate() - (days - 1))
