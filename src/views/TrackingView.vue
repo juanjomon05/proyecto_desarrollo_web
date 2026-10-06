@@ -11,6 +11,7 @@ import ChartCard from '@/components/ChartCard.vue'
 import { PerformanceCalculator } from '@/utils/PerformanceCalculator'
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 
+// reactive variables
 const logs = ref<DailyLogInterface[]>([])
 const date = ref('')
 const studyHours = ref('')
@@ -18,20 +19,24 @@ const sleepHours = ref('')
 const daysWindow = ref(3)
 const errorMessage = ref('')
 
+// charts
 const chartCanvas = ref<HTMLCanvasElement | null>(null)
 let chartInstance: Chart | null = null
 
+// lifecycle
 onMounted(() => {
   loadLogs()
   renderChart()
 })
 
+// functions
 function loadLogs(): void {
   const user = AuthService.getCurrentUser()
   if (!user) return
   logs.value = DailyLogService.getDailyLogsByUser(user.id)
 }
 
+// handlers
 function handleSubmit(): void {
   const user = AuthService.getCurrentUser()
   if (!user) return
@@ -56,6 +61,7 @@ function handleSubmit(): void {
   renderChart()
 }
 
+// functions
 function renderChart(): void {
   const user = AuthService.getCurrentUser()
   if (!user || !chartCanvas.value) return

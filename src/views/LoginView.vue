@@ -1,15 +1,21 @@
 <script setup lang="ts">
+// external imports
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+// internal imports
 import { AuthService } from '@/services/AuthService'
 import AppLogo from '@/components/AppLogo.vue'
 
+// variables
 const router = useRouter()
 
+// reactive variables
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
 
+// handlers
 function handleSubmit(): void {
   if (!email.value || !password.value) {
     errorMessage.value = 'Completa correo y contraseña.'

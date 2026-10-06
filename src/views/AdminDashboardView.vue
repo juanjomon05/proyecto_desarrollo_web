@@ -1,7 +1,10 @@
 <script setup lang="ts">
+// external imports
 import { ref, onMounted, computed, watch } from 'vue'
 import Chart from 'chart.js/auto'
 import ApexCharts from 'apexcharts'
+
+// internal imports
 import { ActivityService } from '@/services/ActivityService'
 import { SubjectService } from '@/services/SubjectService'
 import DataTable from '@/components/DataTable.vue'
@@ -11,10 +14,12 @@ import ChartCard from '@/components/ChartCard.vue'
 import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInterface'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
+// reactive variables
 const subjects = ref<SubjectInterface[]>([])
 const activities = ref<ActivityInterface[]>([])
 const selectedSubjectId = ref('')
 
+// variables
 const columns = [
   { key: 'title', label: 'Título' },
   { key: 'subjectName', label: 'Materia' },
@@ -22,20 +27,24 @@ const columns = [
   { key: 'grade', label: 'Nota' }
 ]
 
+// charts
 const barCanvas = ref<HTMLCanvasElement | null>(null)
 let barChart: Chart | null = null
 
 const donutEl = ref<HTMLDivElement | null>(null)
 let donutChart: ApexCharts | null = null
 
+// lifecycle
 onMounted(() => {
   subjects.value = SubjectService.getSubjects()
   activities.value = ActivityService.getActivities()
   renderCharts()
 })
 
+// watchers
 watch(selectedSubjectId, renderCharts)
 
+// computed variables
 const subjectOptions = computed(() => [
   { value: '', label: 'Todas las materias' },
   ...subjects.value.map(s => ({ value: s.id, label: s.name }))
@@ -46,6 +55,7 @@ const filteredActivities = computed(() => {
   return activities.value.filter(a => a.subjectId === selectedSubjectId.value)
 })
 
+// functions
 function subjectName(subjectId: string): string {
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }

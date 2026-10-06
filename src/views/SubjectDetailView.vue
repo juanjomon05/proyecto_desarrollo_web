@@ -1,6 +1,9 @@
 <script setup lang="ts">
+// external imports
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+
+// internal imports
 import { ActivityService } from '@/services/ActivityService'
 import { SubjectService } from '@/services/SubjectService'
 import { GradeProjectionCalculator } from '@/utils/GradeProjectionCalculator'
@@ -9,10 +12,9 @@ import StatusBadge from '@/components/StatusBadge.vue'
 import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
+// variables
 const route = useRoute()
-const subject = ref<SubjectInterface | null>(null)
-const activities = ref<ActivityInterface[]>([])
-
+const passingGrade = GradeProjectionCalculator.PASSING_GRADE
 const columns = [
   { key: 'title', label: 'Título' },
   { key: 'type', label: 'Tipo' },
@@ -22,14 +24,18 @@ const columns = [
   { key: 'grade', label: 'Nota' }
 ]
 
+// reactive variables
+const subject = ref<SubjectInterface | null>(null)
+const activities = ref<ActivityInterface[]>([])
+
+// lifecycle
 onMounted(() => {
   const id = typeof route.params.id === 'string' ? route.params.id : ''
   subject.value = SubjectService.getSubjectById(id)
   activities.value = ActivityService.getActivitiesBySubject(id)
 })
 
-const passingGrade = GradeProjectionCalculator.PASSING_GRADE
-
+// computed variables
 const projection = computed(() => GradeProjectionCalculator.calculate(activities.value))
 </script>
 

@@ -7,12 +7,16 @@ import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { AuthService } from '@/services/AuthService'
 import AppLogo from '@/components/AppLogo.vue'
 
+// variables
 const router = useRouter()
+// reactive variables
 const isMobileMenuOpen = ref(false)
+// computed variables
 const currentUser = computed(() => AuthService.getCurrentUser())
 const isLoggedIn = computed(() => AuthService.isLoggedIn())
 const isAdmin = computed(() => AuthService.isAdmin())
 
+// handlers
 function handleLogout(): void {
   AuthService.logout()
   isMobileMenuOpen.value = false
@@ -23,6 +27,7 @@ function closeMobileMenu(): void {
   isMobileMenuOpen.value = false
 }
 
+// functions
 function initials(name: string): string {
   return name
     .split(' ')

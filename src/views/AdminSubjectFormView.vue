@@ -1,19 +1,26 @@
 <script setup lang="ts">
+// external imports
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+// internal imports
 import { SubjectService } from '@/services/SubjectService'
 
+// variables
 const route = useRoute()
 const router = useRouter()
 
+// computed variables
 const subjectId = computed<string | undefined>(() =>
   typeof route.params.id === 'string' ? route.params.id : undefined
 )
 const isEditMode = computed(() => !!subjectId.value)
 
+// reactive variables
 const form = ref({ name: '', professor: '', credits: '' })
 const errorMessage = ref('')
 
+// lifecycle
 onMounted(() => {
   if (subjectId.value) {
     const subject = SubjectService.getSubjectById(subjectId.value)
@@ -23,6 +30,7 @@ onMounted(() => {
   }
 })
 
+// handlers
 function handleSubmit(): void {
   if (!form.value.name || !form.value.professor) {
     errorMessage.value = 'Completa nombre y profesor.'

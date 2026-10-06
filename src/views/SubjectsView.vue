@@ -9,9 +9,11 @@ import BaseModal from '@/components/BaseModal.vue'
 import SubjectForm from '@/components/SubjectForm.vue'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
+// reactive variables
 const subjects = ref<SubjectInterface[]>([])
 const isModalOpen = ref(false)
 
+// functions
 function loadSubjects(): void {
   const user = AuthService.getCurrentUser()
   if (user) {
@@ -19,8 +21,10 @@ function loadSubjects(): void {
   }
 }
 
+// lifecycle
 onMounted(loadSubjects)
 
+// handlers
 function handleSaved(): void {
   isModalOpen.value = false
   loadSubjects()

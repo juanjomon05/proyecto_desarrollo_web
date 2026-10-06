@@ -14,12 +14,14 @@ import ActivityForm from '@/components/ActivityForm.vue'
 import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInterface'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
+// reactive variables
 const activities = ref<ActivityInterface[]>([])
 const subjects = ref<SubjectInterface[]>([])
 const selectedSubjectId = ref('')
 const selectedStatus = ref<ActivityStatus | ''>('')
 const isModalOpen = ref(false)
 
+// variables
 const columns = [
   { key: 'title', label: 'Título' },
   { key: 'subjectName', label: 'Materia' },
@@ -36,6 +38,7 @@ const statusFilters: { value: ActivityStatus | ''; label: string }[] = [
   { value: 'completada', label: 'Completada' }
 ]
 
+// functions
 function loadData(): void {
   const user = AuthService.getCurrentUser()
   if (!user) return
@@ -43,8 +46,10 @@ function loadData(): void {
   subjects.value = SubjectService.getSubjectsByUser(user.id)
 }
 
+// lifecycle
 onMounted(loadData)
 
+// computed variables
 const subjectOptions = computed(() => [
   { value: '', label: 'Todas las materias' },
   ...subjects.value.map(s => ({ value: s.id, label: s.name }))
@@ -58,10 +63,12 @@ const filteredActivities = computed(() => {
   })
 })
 
+// functions
 function subjectName(subjectId: string): string {
   return subjects.value.find(s => s.id === subjectId)?.name || 'Desconocida'
 }
 
+// handlers
 function markAsDone(id: string): void {
   ActivityService.updateActivity(id, { status: 'completada' })
   loadData()

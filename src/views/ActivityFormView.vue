@@ -1,15 +1,21 @@
 <script setup lang="ts">
+// external imports
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+// internal imports
 import ActivityForm from '@/components/ActivityForm.vue'
 
+// variables
 const route = useRoute()
 const router = useRouter()
 
+// computed variables
 const activityId = computed<string | undefined>(() =>
   typeof route.params.id === 'string' ? route.params.id : undefined
 )
 
+// handlers
 function handleSaved(): void {
   router.push('/activities')
 }

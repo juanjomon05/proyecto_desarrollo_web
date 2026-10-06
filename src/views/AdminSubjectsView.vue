@@ -1,23 +1,31 @@
 <script setup lang="ts">
+// external imports
 import { ref, onMounted } from 'vue'
+
+// internal imports
 import { SubjectService } from '@/services/SubjectService'
 import DataTable from '@/components/DataTable.vue'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
+// reactive variables
 const subjects = ref<SubjectInterface[]>([])
 
+// variables
 const columns = [
   { key: 'name', label: 'Nombre' },
   { key: 'professor', label: 'Profesor' },
   { key: 'credits', label: 'Créditos' }
 ]
 
+// lifecycle
 onMounted(loadSubjects)
 
+// functions
 function loadSubjects(): void {
   subjects.value = SubjectService.getSubjects()
 }
 
+// handlers
 function handleDelete(id: string): void {
   if (confirm('¿Eliminar esta materia?')) {
     SubjectService.deleteSubject(id)

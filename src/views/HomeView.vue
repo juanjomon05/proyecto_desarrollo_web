@@ -15,12 +15,15 @@ import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInt
 import type { DailyLogInterface } from '@/interfaces/DailyLogInterface'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
+// reactive variables
 const subjects = ref<SubjectInterface[]>([])
 const activities = ref<ActivityInterface[]>([])
 const logs = ref<DailyLogInterface[]>([])
+// computed variables
 const currentUser = computed(() => AuthService.getCurrentUser())
 const isLoggedIn = computed(() => AuthService.isLoggedIn())
 
+// lifecycle
 onMounted(() => {
   const user = AuthService.getCurrentUser()
   if (user) {
@@ -31,6 +34,7 @@ onMounted(() => {
   renderCharts()
 })
 
+// computed variables
 const pendingCount = computed(() => activities.value.filter(a => a.status === 'pendiente').length)
 
 const avgStudyHours = computed(() => {
@@ -53,6 +57,7 @@ const subjectProgress = computed(() =>
   })
 )
 
+// charts
 const gradesCanvas = ref<HTMLCanvasElement | null>(null)
 const statusCanvas = ref<HTMLCanvasElement | null>(null)
 const habitsCanvas = ref<HTMLCanvasElement | null>(null)
@@ -60,6 +65,7 @@ let gradesChart: Chart | null = null
 let statusChart: Chart | null = null
 let habitsChart: Chart | null = null
 
+// functions
 function renderCharts(): void {
   if (gradesChart) gradesChart.destroy()
   if (gradesCanvas.value) {
