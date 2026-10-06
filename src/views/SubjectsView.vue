@@ -5,7 +5,7 @@ import { ref, onMounted } from 'vue'
 // internal imports
 import { SubjectService } from '@/services/SubjectService'
 import { AuthService } from '@/services/AuthService'
-import Modal from '@/components/Modal.vue'
+import BaseModal from '@/components/BaseModal.vue'
 import SubjectForm from '@/components/SubjectForm.vue'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
 
@@ -49,9 +49,9 @@ function handleSaved(): void {
 
     <div v-else class="card empty-state">No tienes materias registradas todavía.</div>
 
-    <Modal v-if="isModalOpen" title="Nueva materia" @close="isModalOpen = false">
+    <BaseModal v-if="isModalOpen" title="Nueva materia" @close="isModalOpen = false">
       <SubjectForm @saved="handleSaved" />
-    </Modal>
+    </BaseModal>
   </div>
 </template>
 

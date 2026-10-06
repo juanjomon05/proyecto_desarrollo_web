@@ -9,7 +9,7 @@ import { AuthService } from '@/services/AuthService'
 import DataTable from '@/components/DataTable.vue'
 import StatusBadge from '@/components/StatusBadge.vue'
 import FilterSelect from '@/components/FilterSelect.vue'
-import Modal from '@/components/Modal.vue'
+import BaseModal from '@/components/BaseModal.vue'
 import ActivityForm from '@/components/ActivityForm.vue'
 import type { ActivityInterface, ActivityStatus } from '@/interfaces/ActivityInterface'
 import type { SubjectInterface } from '@/interfaces/SubjectInterface'
@@ -127,9 +127,9 @@ function handleSaved(): void {
       </DataTable>
     </div>
 
-    <Modal v-if="isModalOpen" title="Nueva actividad" @close="isModalOpen = false">
+    <BaseModal v-if="isModalOpen" title="Nueva actividad" @close="isModalOpen = false">
       <ActivityForm @saved="handleSaved" />
-    </Modal>
+    </BaseModal>
   </div>
 </template>
 

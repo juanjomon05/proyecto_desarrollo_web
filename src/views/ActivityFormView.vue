@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ActivityForm from '@/components/ActivityForm.vue'
-import type { ActivityInterface } from '@/interfaces/ActivityInterface'
 
 const route = useRoute()
 const router = useRouter()
@@ -11,7 +10,7 @@ const activityId = computed<string | undefined>(() =>
   typeof route.params.id === 'string' ? route.params.id : undefined
 )
 
-function handleSaved(_activity: ActivityInterface): void {
+function handleSaved(): void {
   router.push('/activities')
 }
 </script>
