@@ -18,8 +18,8 @@ async function bootstrap() {
       : ['http://localhost:5173', 'http://localhost', 'http://127.0.0.1'],
   });
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
-
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+  
   app.setGlobalPrefix('api');
 
   await app.listen(process.env.PORT ?? 3000);
