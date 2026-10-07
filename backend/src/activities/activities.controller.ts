@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -25,18 +26,22 @@ export class ActivitiesController {
   }
 
   @Get('subject/:subjectId')
-  findBySubjectId(@Param('subjectId') subjectId: string): Promise<Activity[]> {
-    return this.activitiesService.findBySubjectId(Number(subjectId));
+  findBySubjectId(
+    @Param('subjectId', ParseIntPipe) subjectId: number,
+  ): Promise<Activity[]> {
+    return this.activitiesService.findBySubjectId(subjectId);
   }
 
   @Get('user/:userId')
-  findByUserId(@Param('userId') userId: string): Promise<Activity[]> {
-    return this.activitiesService.findByUserId(Number(userId));
+  findByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Activity[]> {
+    return this.activitiesService.findByUserId(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Activity | null> {
-    return this.activitiesService.findOne(Number(id));
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Activity | null> {
+    return this.activitiesService.findOne(id);
   }
 
   @Post()
@@ -46,14 +51,14 @@ export class ActivitiesController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateActivityDto: UpdateActivityDto,
   ): Promise<Activity | null> {
-    return this.activitiesService.update(Number(id), updateActivityDto);
+    return this.activitiesService.update(id, updateActivityDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<void> {
-    return this.activitiesService.delete(Number(id));
+  delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.activitiesService.delete(id);
   }
 }
