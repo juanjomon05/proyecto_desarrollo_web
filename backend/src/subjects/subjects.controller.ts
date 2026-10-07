@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -25,13 +26,15 @@ export class SubjectsController {
   }
 
   @Get('user/:userId')
-  findByUserId(@Param('userId') userId: string): Promise<Subject[]> {
-    return this.subjectsService.findByUserId(Number(userId));
+  findByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Subject[]> {
+    return this.subjectsService.findByUserId(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Subject | null> {
-    return this.subjectsService.findOne(Number(id));
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Subject | null> {
+    return this.subjectsService.findOne(id);
   }
 
   @Post()
@@ -41,14 +44,14 @@ export class SubjectsController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateSubjectDto: UpdateSubjectDto,
   ): Promise<Subject | null> {
-    return this.subjectsService.update(Number(id), updateSubjectDto);
+    return this.subjectsService.update(id, updateSubjectDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<void> {
-    return this.subjectsService.delete(Number(id));
+  delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.subjectsService.delete(id);
   }
 }
