@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -25,8 +26,10 @@ export class DailyLogsController {
   }
 
   @Get('user/:userId')
-  findByUserId(@Param('userId') userId: string): Promise<DailyLog[]> {
-    return this.dailyLogsService.findByUserId(Number(userId));
+  findByUserId(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<DailyLog[]> {
+    return this.dailyLogsService.findByUserId(userId);
   }
 
   @Post()
@@ -36,14 +39,14 @@ export class DailyLogsController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateDailyLogDto: UpdateDailyLogDto,
   ): Promise<DailyLog | null> {
-    return this.dailyLogsService.update(Number(id), updateDailyLogDto);
+    return this.dailyLogsService.update(id, updateDailyLogDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<void> {
-    return this.dailyLogsService.delete(Number(id));
+  delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.dailyLogsService.delete(id);
   }
 }
