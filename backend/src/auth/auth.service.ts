@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 
 // internal imports
+import { verifyPassword } from '../common/password.js';
 import { UsersService } from '../users/users.service.js';
 import { User } from '../users/entities/user.entity.js';
 import { LoginDto } from './dto/login.dto.js';
@@ -18,7 +19,7 @@ export class AuthService {
   async login(loginDto: LoginDto): Promise<User> {
     const user = await this.usersService.findOneByEmail(loginDto.email);
 
-    if (!user || user.password !== loginDto.password) {
+    if (!user || !(await verifyPassword(loginDto.password, user.password))) {
       throw new UnauthorizedException('Correo o contraseña incorrectos.');
     }
 

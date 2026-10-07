@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 // internal imports
+import { hashPassword } from '../common/password.js';
 import { User } from './entities/user.entity.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
@@ -23,8 +24,13 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.usersRepository.create(createUserDto);
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const user = this.usersRepository.create({
+      name: createUserDto.name,
+      email: createUserDto.email,
+      password: await hashPassword(createUserDto.password),
+      role: createUserDto.role,
+    });
 
     return this.usersRepository.save(user);
   }
@@ -37,6 +43,10 @@ export class UsersService {
     }
 
     this.usersRepository.merge(user, updateUserDto);
+
+    if (updateUserDto.password) {
+      user.password = await hashPassword(updateUserDto.password);
+    }
 
     return this.usersRepository.save(user);
   }
