@@ -54,6 +54,34 @@ Otros comandos: `npm run build`, `npm run preview`, `npm run test`, `npm run lin
 - `activities` - CRUD de actividades, `GET /activities/subject/:subjectId` y `GET /activities/user/:userId`.
 - `daily-logs` - CRUD de registros diarios y `GET /daily-logs/user/:userId`.
 
+## Despliegue con Docker Compose
+
+Antes de desplegar, compile ambos proyectos:
+
+```
+cd backend
+npm install
+npm run build
+
+cd ../frontend
+npm install
+npm run build
+```
+
+En la máquina virtual, ajuste `frontend/.env` para que `VITE_API_BASE_URL` apunte a la IP de la instancia, por ejemplo:
+
+```
+VITE_API_BASE_URL=http://IP_DE_LA_INSTANCIA:3000
+```
+
+Luego, desde la carpeta raíz del repositorio, ejecute:
+
+```
+docker compose up -d
+```
+
+El frontend queda publicado por el puerto `80` y el backend por el puerto `3000`.
+
 ## Estructura del backend (`backend/src`)
 
 - Un módulo por entidad (`users`, `subjects`, `activities`, `daily-logs`), cada uno con `entities`, `dto`, service, controller y module.
