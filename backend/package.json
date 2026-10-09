@@ -11,7 +11,7 @@
     "start:dev": "nest start --watch",
     "seed": "nest start --entryFile seeders/seed",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/main.js",
     "lint": "oxlint --type-aware src/"
   },
   "dependencies": {
