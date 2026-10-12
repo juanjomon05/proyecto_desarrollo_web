@@ -15,11 +15,13 @@ import { DailyLogsService } from './daily-logs.service.js';
 import { DailyLog } from './entities/daily-log.entity.js';
 import { CreateDailyLogDto } from './dto/create-daily-log.dto.js';
 import { UpdateDailyLogDto } from './dto/update-daily-log.dto.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 
 @Controller('daily-logs')
 export class DailyLogsController {
   constructor(private readonly dailyLogsService: DailyLogsService) {}
 
+  @Roles('admin')
   @Get()
   findAll(): Promise<DailyLog[]> {
     return this.dailyLogsService.findAll();

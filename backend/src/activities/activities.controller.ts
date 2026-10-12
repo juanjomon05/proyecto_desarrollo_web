@@ -15,11 +15,13 @@ import { ActivitiesService } from './activities.service.js';
 import { Activity } from './entities/activity.entity.js';
 import { CreateActivityDto } from './dto/create-activity.dto.js';
 import { UpdateActivityDto } from './dto/update-activity.dto.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 
 @Controller('activities')
 export class ActivitiesController {
   constructor(private readonly activitiesService: ActivitiesService) {}
 
+  @Roles('admin')
   @Get()
   findAll(): Promise<Activity[]> {
     return this.activitiesService.findAll();

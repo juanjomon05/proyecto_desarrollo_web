@@ -15,11 +15,13 @@ import { SubjectsService } from './subjects.service.js';
 import { Subject } from './entities/subject.entity.js';
 import { CreateSubjectDto } from './dto/create-subject.dto.js';
 import { UpdateSubjectDto } from './dto/update-subject.dto.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 
 @Controller('subjects')
 export class SubjectsController {
   constructor(private readonly subjectsService: SubjectsService) {}
 
+  @Roles('admin')
   @Get()
   findAll(): Promise<Subject[]> {
     return this.subjectsService.findAll();
