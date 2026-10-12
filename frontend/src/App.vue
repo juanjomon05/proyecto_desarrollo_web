@@ -17,10 +17,12 @@ const isLoggedIn = computed(() => AuthService.isLoggedIn())
 const isAdmin = computed(() => AuthService.isAdmin())
 
 // handlers
-function handleLogout(): void {
-  AuthService.logout()
+// Primero sale de la vista actual y luego cierra la sesion; al reves, la vista se
+// vuelve a montar sin token y sus peticiones fallan con 401.
+async function handleLogout(): Promise<void> {
   isMobileMenuOpen.value = false
-  router.push('/login')
+  await router.push('/login')
+  AuthService.logout()
 }
 
 function closeMobileMenu(): void {
