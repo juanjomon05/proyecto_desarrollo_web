@@ -25,7 +25,7 @@ npm run start:dev
 
 Queda disponible en `http://localhost:3000/api`. La base de datos SQLite se crea en `backend/database.sqlite` (no se sube al repositorio).
 
-Variables de entorno opcionales: `PORT` (por defecto 3000), `SQLITE_PATH` (ruta del archivo SQLite) y `CORS_ORIGIN` (orígenes permitidos separados por coma).
+Variables de entorno opcionales: `PORT` (por defecto 3000), `SQLITE_PATH` (ruta del archivo SQLite), `CORS_ORIGIN` (orígenes permitidos separados por coma) y `JWT_SECRET` (secreto para firmar los tokens; en local se usa uno de desarrollo).
 
 Otros comandos: `npm run build`, `npm run start:prod`, `npm run lint`, `npm run format`.
 
@@ -48,7 +48,7 @@ Otros comandos: `npm run build`, `npm run preview`, `npm run test`, `npm run lin
 
 ## Endpoints del backend (`/api`)
 
-- `auth` - `POST /auth/login`, `POST /auth/register`.
+- `auth` - `POST /auth/login`, `POST /auth/register`. Devuelven `{ accessToken, user }`; el resto de rutas exige el header `Authorization: Bearer <accessToken>` y las de administrador requieren rol `admin`.
 - `users` - CRUD de usuarios.
 - `subjects` - CRUD de materias y `GET /subjects/user/:userId`.
 - `activities` - CRUD de actividades, `GET /activities/subject/:subjectId` y `GET /activities/user/:userId`.
