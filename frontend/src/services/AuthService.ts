@@ -64,6 +64,9 @@ export class AuthService {
         if (axios.isAxiosError(error) && error.response?.status === 401 && this.isLoggedIn()) {
           this.logout()
           onExpired()
+          // La vista que hizo la peticion se desmonta al ir a /login; no se rechaza la
+          // promesa para que no quede como un error sin manejar en la consola.
+          return new Promise(() => {})
         }
         return Promise.reject(error)
       }
