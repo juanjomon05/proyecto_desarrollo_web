@@ -4,6 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 // internal imports
 import { verifyPassword } from '../common/password.js';
@@ -11,12 +12,17 @@ import { UsersService } from '../users/users.service.js';
 import { User } from '../users/entities/user.entity.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
+import { AuthResponse } from './interfaces/auth-response.interface.js';
+import { JwtPayload } from './interfaces/jwt-payload.interface.js';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
-  async login(loginDto: LoginDto): Promise<User> {
+  async login(loginDto: LoginDto): Promise<AuthResponse> {
     const user = await this.usersService.findOneByEmailWithPassword(
       loginDto.email,
     );
@@ -25,10 +31,12 @@ export class AuthService {
       throw new UnauthorizedException('Correo o contraseña incorrectos.');
     }
 
-    return user;
+    const { password: _password, ...userWithoutPassword } = user;
+
+    return this.createAuthResponse(userWithoutPassword);
   }
 
-  async register(registerDto: RegisterDto): Promise<User> {
+  async register(registerDto: RegisterDto): Promise<AuthResponse> {
     const existingUser = await this.usersService.findOneByEmail(
       registerDto.email,
     );
@@ -37,11 +45,28 @@ export class AuthService {
       throw new ConflictException('Ese correo ya está registrado.');
     }
 
-    return this.usersService.create({
+    const user = await this.usersService.create({
       name: registerDto.name,
       email: registerDto.email,
       password: registerDto.password,
       role: 'student',
     });
+
+    return this.createAuthResponse(user);
+  }
+
+  private async createAuthResponse(
+    user: Omit<User, 'password'>,
+  ): Promise<AuthResponse> {
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    };
+
+    return {
+      accessToken: await this.jwtService.signAsync(payload),
+      user,
+    };
   }
 }
