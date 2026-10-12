@@ -5,6 +5,7 @@ import axios, { AxiosError, type AxiosResponse } from 'axios'
 
 // internal imports
 import { AuthService } from '@/services/AuthService'
+import { useAuthStore } from '@/stores/AuthStore'
 import type { AuthResponseInterface } from '@/interfaces/AuthResponseInterface'
 
 vi.mock('axios', async importOriginal => {
@@ -67,6 +68,14 @@ describe('AuthService', () => {
     expect(axios.post).toHaveBeenCalledWith(expect.stringMatching(/\/api\/auth\/register$/), { name: 'Ana Pérez', email: 'ana@studeasy.com', password: '1234' })
     expect(AuthService.isLoggedIn()).toBe(true)
     expect(axios.defaults.headers.common.Authorization).toBe('Bearer token-de-ana')
+  })
+
+  it('restoreSession vuelve a enviar el token guardado al abrir la app', () => {
+    useAuthStore().token = 'token-guardado'
+
+    AuthService.restoreSession(() => {})
+
+    expect(axios.defaults.headers.common.Authorization).toBe('Bearer token-guardado')
   })
 
   it('registerUser devuelve null cuando el correo ya existe (409)', async () => {

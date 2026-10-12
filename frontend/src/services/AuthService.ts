@@ -52,6 +52,24 @@ export class AuthService {
     }
   }
 
+  // Al abrir la app: vuelve a enviar el token guardado y, si el backend lo rechaza
+  // porque vencio, cierra la sesion y avisa con onExpired.
+  static restoreSession(onExpired: () => void): void {
+    const { token } = useAuthStore()
+    if (token) axios.defaults.headers.common.Authorization = `Bearer ${token}`
+
+    axios.interceptors.response.use(
+      response => response,
+      error => {
+        if (axios.isAxiosError(error) && error.response?.status === 401 && this.isLoggedIn()) {
+          this.logout()
+          onExpired()
+        }
+        return Promise.reject(error)
+      }
+    )
+  }
+
   // private helpers
   private static startSession({ accessToken, user }: AuthResponseInterface): void {
     const store = useAuthStore()
