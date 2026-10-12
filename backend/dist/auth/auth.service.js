@@ -8,36 +8,53 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { ConflictException, Injectable, UnauthorizedException, } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { verifyPassword } from '../common/password.js';
 import { UsersService } from '../users/users.service.js';
 let AuthService = class AuthService {
     usersService;
-    constructor(usersService) {
+    jwtService;
+    constructor(usersService, jwtService) {
         this.usersService = usersService;
+        this.jwtService = jwtService;
     }
     async login(loginDto) {
-        const user = await this.usersService.findOneByEmail(loginDto.email);
+        const user = await this.usersService.findOneByEmailWithPassword(loginDto.email);
         if (!user || !(await verifyPassword(loginDto.password, user.password))) {
             throw new UnauthorizedException('Correo o contraseña incorrectos.');
         }
-        return user;
+        const { password: _password, ...userWithoutPassword } = user;
+        return this.createAuthResponse(userWithoutPassword);
     }
     async register(registerDto) {
         const existingUser = await this.usersService.findOneByEmail(registerDto.email);
         if (existingUser) {
             throw new ConflictException('Ese correo ya está registrado.');
         }
-        return this.usersService.create({
+        const user = await this.usersService.create({
             name: registerDto.name,
             email: registerDto.email,
             password: registerDto.password,
             role: 'student',
         });
+        return this.createAuthResponse(user);
+    }
+    async createAuthResponse(user) {
+        const payload = {
+            sub: user.id,
+            email: user.email,
+            role: user.role,
+        };
+        return {
+            accessToken: await this.jwtService.signAsync(payload),
+            user,
+        };
     }
 };
 AuthService = __decorate([
     Injectable(),
-    __metadata("design:paramtypes", [UsersService])
+    __metadata("design:paramtypes", [UsersService,
+        JwtService])
 ], AuthService);
 export { AuthService };
 //# sourceMappingURL=auth.service.js.map

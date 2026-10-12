@@ -14,6 +14,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, } from
 import { ActivitiesService } from './activities.service.js';
 import { CreateActivityDto } from './dto/create-activity.dto.js';
 import { UpdateActivityDto } from './dto/update-activity.dto.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 let ActivitiesController = class ActivitiesController {
     activitiesService;
     constructor(activitiesService) {
@@ -42,6 +43,7 @@ let ActivitiesController = class ActivitiesController {
     }
 };
 __decorate([
+    Roles('admin'),
     Get(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

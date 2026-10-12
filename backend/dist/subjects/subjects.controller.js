@@ -14,6 +14,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, } from
 import { SubjectsService } from './subjects.service.js';
 import { CreateSubjectDto } from './dto/create-subject.dto.js';
 import { UpdateSubjectDto } from './dto/update-subject.dto.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 let SubjectsController = class SubjectsController {
     subjectsService;
     constructor(subjectsService) {
@@ -39,6 +40,7 @@ let SubjectsController = class SubjectsController {
     }
 };
 __decorate([
+    Roles('admin'),
     Get(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

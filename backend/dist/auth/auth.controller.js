@@ -14,6 +14,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
+import { Public } from './decorators/public.decorator.js';
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -27,6 +28,7 @@ let AuthController = class AuthController {
     }
 };
 __decorate([
+    Public(),
     HttpCode(HttpStatus.OK),
     Post('login'),
     __param(0, Body()),
@@ -35,6 +37,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
+    Public(),
     Post('register'),
     __param(0, Body()),
     __metadata("design:type", Function),

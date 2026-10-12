@@ -14,6 +14,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, } from
 import { UsersService } from './users.service.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 let UsersController = class UsersController {
     usersService;
     constructor(usersService) {
@@ -71,6 +72,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "delete", null);
 UsersController = __decorate([
+    Roles('admin'),
     Controller('users'),
     __metadata("design:paramtypes", [UsersService])
 ], UsersController);

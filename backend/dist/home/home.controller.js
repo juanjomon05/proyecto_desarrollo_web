@@ -8,12 +8,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Controller, Get } from '@nestjs/common';
+import { Public } from '../auth/decorators/public.decorator.js';
 let HomeController = class HomeController {
     index() {
         return 'API is running';
     }
 };
 __decorate([
+    Public(),
     Get(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

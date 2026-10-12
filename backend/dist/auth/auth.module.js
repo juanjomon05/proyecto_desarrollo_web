@@ -5,16 +5,31 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module.js';
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
+import { AuthGuard } from './guards/auth.guard.js';
+import { RolesGuard } from './guards/roles.guard.js';
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
     Module({
-        imports: [UsersModule],
+        imports: [
+            UsersModule,
+            JwtModule.register({
+                global: true,
+                secret: process.env.JWT_SECRET ?? 'studeasy-dev-secret',
+                signOptions: { expiresIn: '1h' },
+            }),
+        ],
         controllers: [AuthController],
-        providers: [AuthService],
+        providers: [
+            AuthService,
+            { provide: APP_GUARD, useClass: AuthGuard },
+            { provide: APP_GUARD, useClass: RolesGuard },
+        ],
     })
 ], AuthModule);
 export { AuthModule };

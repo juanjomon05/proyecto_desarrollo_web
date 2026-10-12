@@ -26,6 +26,13 @@ let UsersService = class UsersService {
     findOneByEmail(email) {
         return this.usersRepository.findOneBy({ email });
     }
+    findOneByEmailWithPassword(email) {
+        return this.usersRepository
+            .createQueryBuilder('user')
+            .addSelect('user.password')
+            .where('user.email = :email', { email })
+            .getOne();
+    }
     findOne(id) {
         return this.usersRepository.findOneBy({ id });
     }
@@ -36,7 +43,8 @@ let UsersService = class UsersService {
             password: await hashPassword(createUserDto.password),
             role: createUserDto.role,
         });
-        return this.usersRepository.save(user);
+        const savedUser = await this.usersRepository.save(user);
+        return this.usersRepository.findOneByOrFail({ id: savedUser.id });
     }
     async update(id, updateUserDto) {
         const user = await this.usersRepository.findOneBy({ id });
@@ -47,7 +55,8 @@ let UsersService = class UsersService {
         if (updateUserDto.password) {
             user.password = await hashPassword(updateUserDto.password);
         }
-        return this.usersRepository.save(user);
+        await this.usersRepository.save(user);
+        return this.usersRepository.findOneByOrFail({ id });
     }
     async delete(id) {
         await this.usersRepository.delete(id);

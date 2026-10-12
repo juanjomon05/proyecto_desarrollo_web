@@ -14,6 +14,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, } from
 import { DailyLogsService } from './daily-logs.service.js';
 import { CreateDailyLogDto } from './dto/create-daily-log.dto.js';
 import { UpdateDailyLogDto } from './dto/update-daily-log.dto.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 let DailyLogsController = class DailyLogsController {
     dailyLogsService;
     constructor(dailyLogsService) {
@@ -36,6 +37,7 @@ let DailyLogsController = class DailyLogsController {
     }
 };
 __decorate([
+    Roles('admin'),
     Get(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
