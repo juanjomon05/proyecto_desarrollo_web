@@ -1,12 +1,5 @@
 // external imports
-import {
-  IsInt,
-  IsISO8601,
-  IsNumber,
-  Matches,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsInt, IsISO8601, IsNumber, Matches, Max, Min } from 'class-validator';
 
 export class CreateDailyLogDto {
   @IsInt()
