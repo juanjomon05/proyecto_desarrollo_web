@@ -3,6 +3,7 @@ import axios from 'axios'
 
 // internal imports
 import { useAuthStore } from '@/stores/AuthStore'
+import type { AuthResponseInterface } from '@/interfaces/AuthResponseInterface'
 import type { UserInterface } from '@/interfaces/UserInterface'
 import type { LoginDTO } from '@/dtos/LoginDTO'
 import type { RegisterUserDTO } from '@/dtos/RegisterUserDTO'
@@ -24,8 +25,8 @@ export class AuthService {
 
   static async login(credentials: LoginDTO): Promise<boolean> {
     try {
-      const { data } = await axios.post<UserInterface>(`${this.API_URL}/login`, credentials)
-      useAuthStore().currentUser = data
+      const { data } = await axios.post<AuthResponseInterface>(`${this.API_URL}/login`, credentials)
+      this.startSession(data)
       return true
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) return false
@@ -34,17 +35,28 @@ export class AuthService {
   }
 
   static logout(): void {
-    useAuthStore().currentUser = null
+    const store = useAuthStore()
+    store.currentUser = null
+    store.token = null
+    delete axios.defaults.headers.common.Authorization
   }
 
   static async registerUser(user: RegisterUserDTO): Promise<UserInterface | null> {
     try {
-      const { data } = await axios.post<UserInterface>(`${this.API_URL}/register`, user)
-      useAuthStore().currentUser = data
-      return data
+      const { data } = await axios.post<AuthResponseInterface>(`${this.API_URL}/register`, user)
+      this.startSession(data)
+      return data.user
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) return null
       throw error
     }
+  }
+
+  // private helpers
+  private static startSession({ accessToken, user }: AuthResponseInterface): void {
+    const store = useAuthStore()
+    store.currentUser = user
+    store.token = accessToken
+    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
   }
 }
