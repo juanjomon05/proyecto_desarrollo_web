@@ -17,7 +17,9 @@ export class AuthService {
   constructor(private usersService: UsersService) {}
 
   async login(loginDto: LoginDto): Promise<User> {
-    const user = await this.usersService.findOneByEmail(loginDto.email);
+    const user = await this.usersService.findOneByEmailWithPassword(
+      loginDto.email,
+    );
 
     if (!user || !(await verifyPassword(loginDto.password, user.password))) {
       throw new UnauthorizedException('Correo o contraseña incorrectos.');
