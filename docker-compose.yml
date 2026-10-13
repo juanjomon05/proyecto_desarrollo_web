@@ -8,7 +8,7 @@ services:
       PORT: 3000
       SQLITE_PATH: /data/database.sqlite
       JWT_SECRET: "${JWT_SECRET:-cambiar-este-secreto-en-produccion}"
-      CORS_ORIGIN: "http://localhost:5173,http://localhost,http://127.0.0.1,http://127.0.0.1:8080"
+      CORS_ORIGIN: "http://136.80.0.254,http://localhost:5173,http://localhost,http://127.0.0.1,http://127.0.0.1:8080"
     volumes:
       - backend-data:/data
 
