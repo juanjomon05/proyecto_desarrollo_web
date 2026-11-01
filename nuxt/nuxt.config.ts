@@ -1,3 +1,6 @@
+// internal imports
+import { ARTICLES } from './app/data/articles'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },
@@ -6,6 +9,15 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'es' },
       title: 'StudEasy',
+    },
+  },
+  // modo de renderizado de cada grupo de rutas
+  routeRules: {
+    '/blog/**': { prerender: true }, // SSG: se genera en el build
+  },
+  nitro: {
+    prerender: {
+      routes: ['/blog', ...ARTICLES.map((article) => `/blog/${article.slug}`)],
     },
   },
 })
