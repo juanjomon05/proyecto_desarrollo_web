@@ -12,6 +12,7 @@ El frontend consume la API del backend; los datos se guardan en una base de dato
 
 - Node.js ^22.18.0 o >=24.12.0
 - npm
+- Docker y Docker Compose (solo para el despliegue)
 
 ## Cómo ejecutar el backend
 
