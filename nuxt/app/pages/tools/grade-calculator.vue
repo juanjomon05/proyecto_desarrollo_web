@@ -22,6 +22,14 @@ function handleWeightInput(index: number, event: Event): void {
   items.value[index]!.weight = toNumberOrNull((event.target as HTMLInputElement).value)
 }
 
+function handleAddItem(): void {
+  items.value.push({ grade: null, weight: null })
+}
+
+function handleRemoveItem(index: number): void {
+  items.value.splice(index, 1)
+}
+
 useSeoMeta({ title: 'Calculadora de nota | StudEasy' })
 </script>
 
@@ -62,7 +70,19 @@ useSeoMeta({ title: 'Calculadora de nota | StudEasy' })
           @input="handleWeightInput(index, $event)"
         />
       </label>
+      <button
+        type="button"
+        class="btn btn-ghost btn-sm"
+        :disabled="items.length === 1"
+        @click="handleRemoveItem(index)"
+      >
+        Quitar
+      </button>
     </div>
+
+    <button type="button" class="btn btn-ghost calculator__add" @click="handleAddItem">
+      + Agregar actividad
+    </button>
   </section>
 </template>
 
@@ -79,6 +99,10 @@ useSeoMeta({ title: 'Calculadora de nota | StudEasy' })
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 12px;
+}
+
+.calculator__add {
+  align-self: flex-start;
 }
 
 .calculator__field {
