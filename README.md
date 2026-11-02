@@ -123,6 +123,14 @@ El proyecto Nuxt no hay que compilarlo antes: su `Dockerfile` corre `npm ci` y `
 docker compose up -d --build nuxt
 ```
 
+En GCP hay que abrir el puerto `3001` en el firewall, igual que el `80` y el `3000`:
+
+```
+gcloud compute firewall-rules create permitir-nuxt-3001 --direction=INGRESS --action=ALLOW --rules=tcp:3001 --source-ranges=0.0.0.0/0
+```
+
+Si la instancia no está en la red `default`, agregue `--network=NOMBRE_DE_LA_RED`; si las reglas del `80` y el `3000` usan etiquetas de red, agregue `--target-tags=ETIQUETA_DE_LA_INSTANCIA`.
+
 ## Estructura del backend (`backend/src`)
 
 - Un módulo por entidad (`users`, `subjects`, `activities`, `daily-logs`), cada uno con `entities`, `dto`, service, controller y module.
