@@ -1,9 +1,10 @@
 # StudEasy
 
-Aplicación para que un estudiante organice sus materias, actividades y hábitos de estudio en un solo lugar. El repositorio tiene dos proyectos:
+Aplicación para que un estudiante organice sus materias, actividades y hábitos de estudio en un solo lugar. El repositorio tiene tres proyectos:
 
 - `frontend/` - SPA en Vue 3 (Vite, Pinia, Vue Router).
 - `backend/` - API REST en NestJS con TypeORM y SQLite.
+- `nuxt/` - mini versión del proyecto en Nuxt 4 que combina SSG, SSR y CSR (Entregable 2).
 
 El frontend consume la API del backend; los datos se guardan en una base de datos SQLite. Para usar la aplicación hay que levantar los dos proyectos.
 
@@ -45,6 +46,33 @@ Queda disponible en `http://localhost:5173/`. La URL del backend se configura en
 - Administrador: `admin@studeasy.com` / `admin`
 
 Otros comandos: `npm run build`, `npm run preview`, `npm run test`, `npm run lint`.
+
+## Cómo ejecutar el proyecto Nuxt
+
+Es independiente del frontend y del backend: sus datos están quemados en el código.
+
+```
+cd nuxt
+npm install
+npm run dev
+```
+
+Queda disponible en `http://localhost:3000/` (si el backend ya está usando ese puerto, se puede correr con `npm run dev -- --port 3001`). Para probar los modos de render como en producción:
+
+```
+npm run build
+node .output/server/index.mjs
+```
+
+Otros comandos: `npm run typecheck`, `npm run format`.
+
+| Ruta | Modo | Qué muestra |
+| -- | -- | -- |
+| `/blog`, `/blog/:slug` | SSG | 3 artículos quemados en `app/data/articles.ts`. Se generan como HTML en el build. |
+| `/subjects`, `/subjects/:id` | SSR | Materias quemadas en la capa server (`server/subjects`). La página las pide con `$fetch` a `/api/subjects` y el servidor la renderiza en cada petición. |
+| `/tools`, `/tools/grade-calculator`, `/tools/faqs` | CSR | Calculadora de la nota que falta para ganar una materia y preguntas frecuentes. Se renderizan solo en el navegador. |
+
+Los modos se configuran en `routeRules` de `nuxt/nuxt.config.ts`.
 
 ## Endpoints del backend (`/api`)
 
