@@ -7,4 +7,8 @@ export class SubjectService {
   static getSubjects(): Promise<SubjectInterface[]> {
     return $fetch<SubjectInterface[]>(this.API_URL)
   }
+
+  static getSubjectById(id: number): Promise<SubjectInterface> {
+    return $fetch<SubjectInterface>(`${this.API_URL}/${id}`)
+  }
 }
