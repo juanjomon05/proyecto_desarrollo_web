@@ -65,6 +65,12 @@ npm run build
 node .output/server/index.mjs
 ```
 
+También se puede levantar con Docker desde la carpeta raíz del repositorio. Queda disponible en `http://localhost:3001/`:
+
+```
+docker compose up -d --build nuxt
+```
+
 Otros comandos: `npm run typecheck`, `npm run format`.
 
 | Ruta | Modo | Qué muestra |
