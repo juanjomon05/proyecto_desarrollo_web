@@ -143,6 +143,14 @@ curl -s http://IP_DE_LA_INSTANCIA:3001/tools | grep -c "<h1"
 - SSR: el segundo da un número mayor que `0`, porque el HTML ya trae las materias.
 - CSR: el tercero da `0`, porque el servidor envía la app vacía.
 
+## Integración continua
+
+El workflow `.github/workflows/ci.yml` corre en cada push y pull request a `master`, con un job por proyecto:
+
+- Frontend: `npm ci`, lint, type check (`vue-tsc`) y pruebas unitarias.
+- Backend: `npm ci`, lint y build.
+- Nuxt: `npm ci`, `npm run typecheck` y `npm run build`.
+
 ## Estructura del backend (`backend/src`)
 
 - Un módulo por entidad (`users`, `subjects`, `activities`, `daily-logs`), cada uno con `entities`, `dto`, service, controller y module.
