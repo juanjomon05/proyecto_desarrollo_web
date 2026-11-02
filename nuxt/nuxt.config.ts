@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   // modo de renderizado de cada grupo de rutas
   routeRules: {
     '/blog/**': { prerender: true }, // SSG: se genera en el build
+    '/subjects/**': { ssr: true }, // SSR: se renderiza en el servidor en cada peticion
   },
   nitro: {
     prerender: {
