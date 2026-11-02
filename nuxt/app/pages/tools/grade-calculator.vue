@@ -13,6 +13,7 @@ const items = ref<GradeItemInterface[]>([
 ])
 
 // computed variables
+const validationError = computed(() => GradeProjectionCalculator.getValidationError(items.value))
 const projection = computed(() => GradeProjectionCalculator.calculate(items.value))
 
 // functions
@@ -95,7 +96,9 @@ useSeoMeta({ title: 'Calculadora de nota | StudEasy' })
   <section class="panel result">
     <h2>Resultado</h2>
 
-    <p v-if="projection.status === 'no-data'">
+    <p v-if="validationError" class="state-message">{{ validationError }}</p>
+
+    <p v-else-if="projection.status === 'no-data'">
       Escribe la nota y el porcentaje de al menos una actividad para ver el resultado.
     </p>
 
