@@ -166,6 +166,11 @@ a {
   font-size: 0.8rem;
 }
 
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 /* ---------- Inputs (mismos estilos del frontend) ---------- */
 .input {
   font-family: inherit;
