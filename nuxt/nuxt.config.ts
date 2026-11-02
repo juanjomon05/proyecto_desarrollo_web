@@ -15,6 +15,7 @@ export default defineNuxtConfig({
   routeRules: {
     '/blog/**': { prerender: true }, // SSG: se genera en el build
     '/subjects/**': { ssr: true }, // SSR: se renderiza en el servidor en cada peticion
+    '/tools/**': { ssr: false }, // CSR: el servidor envia la app vacia y se renderiza en el navegador
   },
   nitro: {
     prerender: {
