@@ -84,7 +84,7 @@ Los modos se configuran en `routeRules` de `nuxt/nuxt.config.ts`.
 
 ## Despliegue con Docker Compose
 
-Antes de desplegar, compile ambos proyectos:
+Antes de desplegar, compile el backend y el frontend (sus imágenes copian la carpeta `dist` ya compilada):
 
 ```
 cd backend
@@ -108,7 +108,13 @@ Luego, desde la carpeta raíz del repositorio, ejecute:
 docker compose up -d
 ```
 
-El frontend queda publicado por el puerto `80` y el backend por el puerto `3000`.
+El frontend queda publicado por el puerto `80`, el backend por el puerto `3000` y el proyecto Nuxt por el puerto `3001`.
+
+El proyecto Nuxt no hay que compilarlo antes: su `Dockerfile` corre `npm ci` y `npm run build` dentro de la imagen, y el contenedor ejecuta el servidor Node de `.output` (lo necesita el SSR de `/subjects`). Para desplegarlo de nuevo después de un `git pull`:
+
+```
+docker compose up -d --build nuxt
+```
 
 ## Estructura del backend (`backend/src`)
 
