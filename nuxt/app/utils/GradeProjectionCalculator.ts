@@ -8,6 +8,32 @@ import type { GradeProjectionInterface } from '~/interfaces/GradeProjectionInter
 export class GradeProjectionCalculator {
   static readonly PASSING_GRADE = 3
   static readonly MAX_GRADE = 5
+  static readonly MAX_WEIGHT = 100
+
+  // Devuelve el mensaje del primer dato invalido, o null si todo esta bien. Usa los
+  // mismos mensajes del formulario de actividades del frontend.
+  static getValidationError(items: GradeItemInterface[]): string | null {
+    if (
+      items.some((item) => item.grade !== null && (item.grade < 0 || item.grade > this.MAX_GRADE))
+    ) {
+      return 'La nota debe estar entre 0.0 y 5.0.'
+    }
+
+    if (
+      items.some(
+        (item) => item.weight !== null && (item.weight < 0 || item.weight > this.MAX_WEIGHT),
+      )
+    ) {
+      return 'El porcentaje debe estar entre 0 y 100.'
+    }
+
+    const totalWeight = items.reduce((sum, item) => sum + (item.weight ?? 0), 0)
+    if (totalWeight > this.MAX_WEIGHT) {
+      return 'Los porcentajes de las actividades suman más de 100%.'
+    }
+
+    return null
+  }
 
   static calculate(items: GradeItemInterface[]): GradeProjectionInterface {
     const graded = items.filter((item) => item.grade !== null && item.weight !== null)
