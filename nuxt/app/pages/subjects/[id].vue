@@ -27,6 +27,17 @@ useSeoMeta({ title: `${subject.value.name} | StudEasy`, description: subject.val
     <NuxtLink to="/subjects" class="back-link">← Volver a materias</NuxtLink>
     <h1>{{ subject.name }}</h1>
     <p>{{ subject.description }}</p>
+
+    <dl class="subject__facts">
+      <div>
+        <dt>Profesor</dt>
+        <dd>{{ subject.professor }}</dd>
+      </div>
+      <div>
+        <dt>Créditos</dt>
+        <dd>{{ subject.credits }}</dd>
+      </div>
+    </dl>
   </article>
 </template>
 
@@ -36,5 +47,26 @@ useSeoMeta({ title: `${subject.value.name} | StudEasy`, description: subject.val
   flex-direction: column;
   gap: 16px;
   max-width: 760px;
+}
+
+.subject__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin: 0;
+}
+
+.subject__facts dt {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.subject__facts dd {
+  margin: 4px 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
 }
 </style>
