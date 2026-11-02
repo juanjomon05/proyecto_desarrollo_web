@@ -1,12 +1,19 @@
 <script setup lang="ts">
 // internal imports
+import { GradeProjectionCalculator } from '~/utils/GradeProjectionCalculator'
 import type { GradeItemInterface } from '~/interfaces/GradeItemInterface'
+
+// variables
+const passingGrade = GradeProjectionCalculator.PASSING_GRADE
 
 // reactive variables
 const items = ref<GradeItemInterface[]>([
   { grade: 4.3, weight: 40 },
   { grade: null, weight: 60 },
 ])
+
+// computed variables
+const projection = computed(() => GradeProjectionCalculator.calculate(items.value))
 
 // functions
 function toNumberOrNull(value: string): number | null {
@@ -84,6 +91,42 @@ useSeoMeta({ title: 'Calculadora de nota | StudEasy' })
       + Agregar actividad
     </button>
   </section>
+
+  <section class="panel result">
+    <h2>Resultado</h2>
+
+    <p v-if="projection.status === 'no-data'">
+      Escribe la nota y el porcentaje de al menos una actividad para ver el resultado.
+    </p>
+
+    <template v-else>
+      <div class="result__stats">
+        <div class="result__stat">
+          <span class="result__label">Acumulado</span>
+          <span class="result__value">{{ projection.achievedPoints.toFixed(2) }} / 5.0</span>
+        </div>
+        <div class="result__stat">
+          <span class="result__label">Evaluado</span>
+          <span class="result__value">{{ projection.gradedWeight }}%</span>
+        </div>
+        <div class="result__stat">
+          <span class="result__label">Pendiente</span>
+          <span class="result__value">{{ projection.remainingWeight }}%</span>
+        </div>
+      </div>
+
+      <p v-if="projection.status === 'won'" class="result__message result__message--success">
+        Ya aseguraste el {{ passingGrade.toFixed(1) }} en esta materia, sin importar lo que falte.
+      </p>
+      <p v-else-if="projection.status === 'lost'" class="result__message result__message--danger">
+        Con lo que falta por evaluar ya no es posible llegar a {{ passingGrade.toFixed(1) }}.
+      </p>
+      <p v-else class="result__message">
+        Necesitas un promedio de <strong>{{ projection.neededAverage?.toFixed(2) }}</strong> en el
+        {{ projection.remainingWeight }}% restante para ganar la materia.
+      </p>
+    </template>
+  </section>
 </template>
 
 <style scoped>
@@ -111,6 +154,47 @@ useSeoMeta({ title: 'Calculadora de nota | StudEasy' })
   gap: 6px;
   flex: 1 1 160px;
   font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 760px;
+}
+
+.result__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.result__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.result__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+}
+
+.result__value {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.result__message--success {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.result__message--danger {
+  color: var(--color-danger);
   font-weight: 600;
 }
 </style>
