@@ -131,6 +131,18 @@ gcloud compute firewall-rules create permitir-nuxt-3001 --direction=INGRESS --ac
 
 Si la instancia no está en la red `default`, agregue `--network=NOMBRE_DE_LA_RED`; si las reglas del `80` y el `3000` usan etiquetas de red, agregue `--target-tags=ETIQUETA_DE_LA_INSTANCIA`.
 
+Para comprobar en el servidor los modos de render de Nuxt:
+
+```
+docker compose exec nuxt ls .output/public/blog
+curl -s http://IP_DE_LA_INSTANCIA:3001/subjects | grep -c "Bases de Datos"
+curl -s http://IP_DE_LA_INSTANCIA:3001/tools | grep -c "<h1"
+```
+
+- SSG: el primer comando lista `index.html` y una carpeta por artículo, generados en el build.
+- SSR: el segundo da un número mayor que `0`, porque el HTML ya trae las materias.
+- CSR: el tercero da `0`, porque el servidor envía la app vacía.
+
 ## Estructura del backend (`backend/src`)
 
 - Un módulo por entidad (`users`, `subjects`, `activities`, `daily-logs`), cada uno con `entities`, `dto`, service, controller y module.
